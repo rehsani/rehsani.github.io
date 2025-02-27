@@ -3,13 +3,60 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reza Ehsani Personal Website</title>
-        <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-    </style>
+        <title>My Personal Website</title>
+        <script src="https://cdn.tailwindcss.com"></script>
     </head>
-    <body>
-        <h1>Welcome to My Personal Website</h1>
-        <p>Hosted on GitHub Pages!</p>
+    <body class="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white transition-all duration-300">
+
+        <!-- Navbar -->
+        <nav class="bg-blue-600 text-white p-4 flex justify-between">
+            <h1 class="text-xl font-bold">My Portfolio</h1>
+            <button id="darkModeToggle" class="bg-gray-800 px-4 py-2 rounded">🌙</button>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="text-center p-10">
+            <h1 class="text-4xl font-bold">Welcome to My Website</h1>
+            <p class="text-lg mt-2">I'm a developer passionate about building awesome things.</p>
+        </section>
+
+        <!-- Portfolio Section -->
+        <section class="p-10">
+            <h2 class="text-2xl font-bold mb-4">Projects</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded shadow-lg dark:bg-gray-800">
+                    <h3 class="font-bold">Project 1</h3>
+                    <p>A cool project description.</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow-lg dark:bg-gray-800">
+                    <h3 class="font-bold">Project 2</h3>
+                    <p>Another cool project.</p>
+                </div>
+                <div class="bg-white p-4 rounded shadow-lg dark:bg-gray-800">
+                    <h3 class="font-bold">Project 3</h3>
+                    <p>Something exciting.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="p-10">
+            <h2 class="text-2xl font-bold mb-4">Contact Me</h2>
+            <form class="space-y-4">
+                <input type="text" placeholder="Your Name" class="w-full p-2 border rounded dark:bg-gray-800">
+                <input type="email" placeholder="Your Email" class="w-full p-2 border rounded dark:bg-gray-800">
+                <textarea placeholder="Your Message" class="w-full p-2 border rounded dark:bg-gray-800"></textarea>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Send</button>
+            </form>
+        </section>
+
+        <!-- Dark Mode Script -->
+        <script>
+        const toggle = document.getElementById('darkModeToggle');
+        toggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+        });
+    </script>
+
     </body>
 </html>
