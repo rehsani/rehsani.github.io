@@ -1,22 +1,29 @@
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+  padding-top: 4.5rem;
   min-width: 800px;
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-  background-image: url('../images/cover.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  background: #0d0d0d;
 }
 
 .top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
   background: rgba(0, 0, 0, 0.6);
   padding: 1rem 2rem;
 }
 
 .top-bar nav {
   margin: 0 auto;
-  max-width: 1980px;
+  max-width: 1920px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,7 +56,127 @@ body {
   text-decoration: underline;
 }
 
+/* Tools dropdown */
+.top-bar .nav-links .dropdown {
+  position: relative;
+}
+.top-bar .nav-links .dropdown-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.top-bar .nav-links .dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+}
+.top-bar .nav-links .dropdown-menu li {
+  margin: 0;
+}
+.top-bar .nav-links .dropdown-menu a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  white-space: nowrap;
+}
+.top-bar .nav-links .dropdown-menu a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+}
+
+/* Page 1: cover (name, nav, photo) - fills one full screen */
+.landing {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('../images/cover.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Fade at bottom of landing into next section */
+.landing::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: linear-gradient(to top, #0d0d0d, transparent);
+  pointer-events: none;
+}
+
+/* Page 2: About - full width, own background image */
+#about {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  background-image: url('../images/about-bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 3rem 2rem;
+  box-sizing: border-box;
+}
+
+/* Soft fade at top of About so it blends with landing */
+#about::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, #0d0d0d, transparent);
+  pointer-events: none;
+}
+
+#about .about-inner {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+#about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#about h2 {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+#about p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
 @media (max-width: 800px) {
+  body {
+    min-width: 0;
+  }
+
   .top-bar nav {
     flex-direction: column;
     align-items: flex-start;
@@ -57,5 +184,18 @@ body {
   }
   .top-bar .name {
     margin-right: 0;
+  }
+
+  #about {
+    padding: 2rem 1rem;
+  }
+  #about .about-inner {
+    padding: 1.5rem 1rem;
+  }
+  #about h2 {
+    font-size: 1.15rem;
+  }
+  #about p {
+    font-size: 0.95rem;
   }
 }
