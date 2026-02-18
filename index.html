@@ -45,14 +45,49 @@
     <div class="contact-inner">
       <h2>Get in touch</h2>
       <p class="contact-intro">Send me a message and I’ll get back to you.</p>
-      <form action="https://formspree.io/f/maqdbbrr" method="POST" class="contact-form">
+      <div id="contact-success" class="contact-success" hidden>
+        <p>Thanks! Your message was sent. I’ll get back to you soon.</p>
+      </div>
+      <form id="contact-form" action="https://formspree.io/f/maqdbbrr" method="POST" class="contact-form">
+        <input type="hidden" name="_next" value="">
+        <label for="contact-name">Your name</label>
+        <input type="text" id="contact-name" name="name" required placeholder="Your name">
         <label for="contact-email">Your email</label>
         <input type="email" id="contact-email" name="email" required placeholder="you@example.com">
+        <label for="contact-email-confirm">Confirm your email</label>
+        <input type="email" id="contact-email-confirm" required placeholder="you@example.com" autocomplete="off">
+        <p id="contact-email-mismatch" class="contact-error" hidden>Emails don’t match. Please check and try again.</p>
         <label for="contact-message">Message</label>
         <textarea id="contact-message" name="message" required rows="5" placeholder="Your message..."></textarea>
         <button type="submit">Send</button>
       </form>
     </div>
   </section>
+  <script>
+    (function() {
+      var form = document.getElementById('contact-form');
+      var email = document.getElementById('contact-email');
+      var emailConfirm = document.getElementById('contact-email-confirm');
+      var mismatchMsg = document.getElementById('contact-email-mismatch');
+      var successDiv = document.getElementById('contact-success');
+
+      form.querySelector('input[name="_next"]').value = window.location.href.split('#')[0] + '#contact?sent=1';
+
+      form.addEventListener('submit', function(e) {
+        if (email.value !== emailConfirm.value) {
+          e.preventDefault();
+          mismatchMsg.hidden = false;
+          emailConfirm.focus();
+          return;
+        }
+        mismatchMsg.hidden = true;
+      });
+
+      if (window.location.hash === '#contact' && window.location.search.indexOf('sent=1') !== -1) {
+        successDiv.hidden = false;
+        form.hidden = true;
+      }
+    })();
+  </script>
 </body>
 </html>
