@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Does Market Timing Matter? — Reza Ehsani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
+    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
+    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
+    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
+    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
+    .blog-article figure { margin: 1.5rem 0; }
+    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
+    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+    .blog-article a { color: #7eb8da; text-decoration: none; }
+    .blog-article a:hover { text-decoration: underline; }
+    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+    .blog-article .character { margin: 1rem 0; padding-left: 0.5rem; border-left: 3px solid rgba(255,255,255,0.2); }
+    .blog-article .character strong { color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <nav>
+      <a href="index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Rent Index</a></li>
+            <li><a href="wealth-estimator.html">Wealth Estimator</a></li>
+          </ul>
+        </li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="landing" style="min-height: 20vh;"></div>
+
+  <article class="blog-article">
+    <a href="blog.html" class="back">← Back to blog</a>
+    <h1>Does Market Timing Matter?</h1>
+    <p class="meta">Four investors, same amount invested over 30 years—only their timing differs. Here’s what the data says.</p>
+
+    <p>
+      You’ve probably heard “time in the market beats timing the market.” But how much does timing actually matter? I ran a simple backtest: four people each invest <strong>$1,000 per year</strong> for 30 years in the S&P 500. The only difference is <em>when</em> they buy.
+    </p>
+
+    <h2>The four characters</h2>
+    <p>
+      Each character invests the same total ($30,000 over 30 years) but with a different timing rule.
+    </p>
+    <figure>
+      <img src="images/2a_characters.png" alt="Cartoon of four investors: Barry, Harvey, Skye, and David." width="720" height="480">
+      <figcaption>Barry, Harvey, Skye, and David—four timing strategies, one backtest.</figcaption>
+    </figure>
+
+    <div class="character">
+      <p><strong>Barry</strong> — The one who “knows” the bottom. Barry has a crystal ball (or a time machine). Every year she invests her $1,000 on the single day the S&P 500 hits its <em>lowest</em> close. In reality, nobody can do this; we use Barry as the upper bound of “perfect” timing.</p>
+    </div>
+    <div class="character">
+      <p><strong>Harvey</strong> — The one who’s always late. Harvey means well but has historically terrible timing. Every year, he invests on the day the market hits its <em>highest</em> close. This means Harvey bought at the absolute top of the <strong>Dot-com bubble (2000)</strong>, right before the <strong>2008 Financial Crisis</strong>, immediately preceding the <strong>2020 Covid crash</strong>, and at the <strong>2022 peak</strong>.</p>
+    </div>
+    <div class="character">
+      <p><strong>Skye</strong> — The one who can’t wait. As soon as she has the money (the first trading day of each year), she invests the full $1,000. No waiting for a dip. Interestingly, Skye usually beats David because her money spends more total days in the market—allowing compounding to start as early as possible each year.</p>
+    </div>
+    <div class="character">
+      <p><strong>David</strong> — The nine-to-fiver. David gets paid every other week and invests a fixed slice each payday: $1,000 ÷ 26 ≈ $38.46 per paycheck. He never tries to time anything; he just invests when the money lands. He’s the personification of "slow and steady."</p>
+    </div>
+
+    <h2>Data and assumptions</h2>
+    <ul>
+      <li><strong>Index:</strong> S&P 500 (^GSPC) total return proxy.</li>
+      <li><strong>Period:</strong> 1996 through 2025 (30 full years).</li>
+      <li><strong>Amount:</strong> $1,000 per year per person.</li>
+      <li><strong>No fees, taxes, or inflation</strong> are included; the focus is purely on timing.</li>
+    </ul>
+
+    <h2>Portfolio value over time</h2>
+    <p>
+      The line chart shows each character’s portfolio value year by year. Barry (best timing) ends up highest; Harvey (worst timing) ends up lowest—but notice that even Harvey’s line trends up strongly over 30 years. Skye and David sit in the middle and track each other closely: the “eager” investor and the “steady” investor end up in a similar place.
+    </p>
+    <figure>
+      <img src="images/2b_timing_market_line_plot.png" alt="Line chart of portfolio value over time for four timing strategies: Barry, Harvey, Skye, David." width="720" height="480">
+      <figcaption>Portfolio value (USD) by timing strategy over 30 years. Each person invests $1,000 per year in the S&P 500.</figcaption>
+    </figure>
+
+    <h2>Final portfolio value: invested vs growth</h2>
+    <p>
+      The bar chart below compares where each person lands at the end. Each bar is split into two parts: the gray band at the bottom is the <strong>$30,000 they put in</strong>; the colored segment on top is the <strong>growth</strong> from market returns. So the full height of the bar is their total portfolio value.
+    </p>
+    <figure>
+      <img src="images/2c_timing_market_bar_plot.png" alt="Stacked bar chart of final portfolio value for Barry, Harvey, Skye, and David; gray segment = $30k invested, colored segment = growth." width="720" height="480">
+      <figcaption>Final portfolio value by strategy. Gray = $30k invested (same for all); colored = growth. Barry leads; Harvey lags but still has substantial growth.</figcaption>
+    </figure>
+
+    <div class="highlight-box">
+      <strong>The spread is real but not catastrophic.</strong> Even Harvey—who buys at the worst moment every single year—still grows his $30,000 into well over $100,000. Barry does best; Skye and David land in the middle and close to each other. For long-term goals, <strong>staying invested matters more than nailing the perfect entry.</strong>
+    </div>
+
+    <div class="highlight-box">
+        <strong>The "Early Bird" Edge:</strong> You might notice Skye (Lump Sum) finishes slightly ahead of David (DCA). This is because Skye’s $1,000 is working for her from Day 1 of the year, whereas David’s last $38 contribution doesn't enter the market until late December. 
+    </div>
+  
+    <div class="highlight-box">
+    <strong>The Harvey Lesson:</strong> Even Harvey—who bought at the absolute worst moment of every major crash for 30 years—still grew his $30,000 into well over $100,000. <strong>Staying invested matters more than nailing the perfect entry.</strong>
+    </div>
+
+    <h2>Conclusion</h2>
+    <p>
+      If you have a long horizon, timing is not make-or-break. Barry is a thought experiment; nobody can consistently buy the annual low. The comparison that actually matters is between people like Skye (invest when you have the money) and David (invest on a schedule). They end up in the same ballpark. So: automate your contributions if you can, invest when you get paid, and don’t stress about picking the “right” day. Time in the market is what shows up in the data.
+    </p>
+    <div class="highlight-box">
+      The best time to start was years ago. <strong>The second best time is today.</strong> If you’re maxing (or just contributing to) a 401(k), you’re already doing the right thing; see <a href="blog-401k.html">What if you had maxed your 401(k) every year?</a> for how that can play out over decades.
+    </div>
+
+    
+
+    <p><a href="blog.html">← Back to blog</a></p>
+  </article>
+</body>
+</html>
