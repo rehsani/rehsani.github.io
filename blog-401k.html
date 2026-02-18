@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What If You Had Maxed Your 401(k) Every Year? — Reza Ehsani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
+    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
+    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
+    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
+    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
+    .blog-article figure { margin: 1.5rem 0; }
+    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
+    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+    .blog-article a { color: #7eb8da; text-decoration: none; }
+    .blog-article a:hover { text-decoration: underline; }
+    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+    .blog-article table { width: 100%; max-width: 600px; margin: 1.5rem auto; border-collapse: collapse; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .blog-article th, .blog-article td { padding: 0.75rem 1rem; text-align: left; border: 1px solid rgba(255,255,255,0.1); }
+    .blog-article th { color: #fff; font-weight: 600; background: rgba(255,255,255,0.12); }
+    .blog-article td { color: rgba(255,255,255,0.92); background: rgba(255,255,255,0.03); }
+    .blog-article tr:hover td { background: rgba(255,255,255,0.07); }
+    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <nav>
+      <a href="index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="#">CV</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Rent Index</a></li>
+            <li><a href="wealth-estimator.html">Wealth Estimator</a></li>
+          </ul>
+        </li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="landing" style="min-height: 20vh;"></div>
+
+  <article class="blog-article">
+    <a href="index.html" class="back">← Back</a>
+    <h1>What If You Had Maxed Your 401(k) Every Year?</h1>
+    <p class="meta">A backtest of max employee contributions invested in stocks and bonds (2004–2025).</p>
+
+    <p>
+      Suppose you contributed the IRS maximum to your 401(k) every year and invested it in a few simple strategies: 100% S&P 500, 100% NASDAQ, 100% Dow, 100% bonds (AGG), or an 80/20 stock–bond mix. How much would you have by 2025, and how much does your <em>start year</em> matter? I ran the numbers using historical limits, biweekly contributions, and adjusted prices.
+    </p>
+    <div class="highlight-box">
+      Many people can’t max out their 401(k)—and that’s okay. This post uses the maximum to show what’s possible at the limit; <strong>even if you can’t hit the max, contributing as much as you can still puts time and compounding on your side.</strong>
+    </div>
+
+    <h2>How the backtest works</h2>
+    <p>
+      Each year we contribute the full employee elective deferral limit, split into 26 biweekly payments. On each payday we “buy” at that day’s open price (adjusted for splits/dividends). We use the actual IRS limits by year and real price data. 
+    </p>
+    <ul>
+      <li><strong>Data:</strong> S&P 500, NASDAQ, Dow, and iShares Aggregate Bond ETF (AGG).</li>
+      <li><strong>Assumptions:</strong> No fees, taxes, or inflation are included.</li>
+      <li><strong>Exclusions:</strong> These calculations exclude employer matching and "catch-up" contributions for those age 50+.</li>
+      <li><strong>Period:</strong> The common comparison period starts in 2004 (when AGG data begins) and runs through early 2025.</li>
+    </ul>
+
+    <h2>401(k) contribution limits over time</h2>
+    <p>
+      The IRS raises the limit periodically to keep pace with inflation. It has more than tripled since 1989.
+    </p>
+    <figure>
+      <img src="images/1a_contribution_limits.png" alt="Bar chart of 401(k) annual contribution limit by year from 1989 to 2025." width="720" height="480">
+      <figcaption>401(k) employee elective deferral limit (USD) by year.</figcaption>
+    </figure>
+
+    <h2>Portfolio value by strategy</h2>
+    <p>
+      Below is the growth of a 401(k) that maxed contributions every year starting in 2004. The dashed line represents the <strong>Cumulative Contributions</strong>—the "break-even" point if you had simply kept the cash under a mattress.
+    </p>
+    <figure>
+      <img src="images/1b_portfolio_value_by_strategy.png" alt="Line chart of portfolio value over time for S&P 500, NASDAQ, Dow, AGG, and 80/20 mix, plus cumulative contributions." width="720" height="480">
+      <figcaption>Portfolio value (USD) by strategy; biweekly max contributions, value as of each date.</figcaption>
+    </figure>
+
+    <div class="highlight-box">
+      <strong>The disparity is striking:</strong> While bonds (AGG) barely outpaced the total cash contributed, the NASDAQ transformed those same contributions into a multi-million dollar nest egg.
+    </div>
+
+    <p>Summary by strategy (value as of 2025, sorted by final value). Cumulative contributions total <strong>0.40 M USD</strong>—use this to compare with each strategy’s final value below.</p>
+    <table>
+      <thead>
+        <tr><th>Strategy</th><th>Final Value (M USD)</th><th>Growth Multiple</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>NASDAQ</td><td>$2.21</td><td>5.56x</td></tr>
+        <tr><td>S&P 500</td><td>$1.38</td><td>3.48x</td></tr>
+        <tr><td>80% Stocks + 20% Bonds</td><td>$1.20</td><td>3.03x</td></tr>
+        <tr><td>Dow Jones</td><td>$1.09</td><td>2.74x</td></tr>
+        <tr><td>AGG (Bonds)</td><td>$0.49</td><td>1.24x</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Start year matters</h2>
+    <p>
+      If you had started maxing your S&P 500 401(k) in 1990 versus 2010, your outcome would differ wildly. We measured this using the <strong>Growth Multiple</strong> (final value ÷ total contributed). 
+    </p>
+    <p>
+      For example, a 5.56x multiple means that for every $1.00 you contributed, the market added an additional $4.56 in growth.
+    </p>
+    <figure>
+      <img src="images/1c_growth_multiple_by_start_year.png" alt="Bar chart of growth multiple by start year for S&P 500 401(k), value as of 2025." width="720" height="480">
+      <figcaption>S&P 500 401(k): growth multiple by start year (value as of 2025).</figcaption>
+    </figure>
+    <p>
+      Earlier start years generally enjoy higher multiples due to the power of compounding and a longer "runway" to recover from market downturns.
+    </p>
+    <figure>
+      <img src="images/1d_final_value_by_start_year.png" alt="Bar chart of final portfolio value in millions USD by start year for S&P 500 401(k), value as of 2025." width="720" height="480">
+      <figcaption>S&P 500 401(k): final value (M USD) by start year (value as of 2025).</figcaption>
+    </figure>
+    <p>
+      Unsurprisingly, the final value drops as the start year gets later. You are contributing for fewer years and giving the money less time to work.
+    </p>
+
+    <h2>The Bottom Line</h2>
+    <p>
+      Maxing your 401(k) is a powerful wealth-building tool, but the strategy you choose and the time you give it are the ultimate multipliers. 
+    </p>
+    <div class="highlight-box">
+      The "Start Year" data shows a clear trend: the best time to start maxing out your contributions was 20 years ago. <strong>The second best time is today.</strong>
+    </div>
+
+    <p><a href="index.html">← Back to home</a></p>
+  </article>
+</body>
+</html>
