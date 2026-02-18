@@ -44,6 +44,7 @@
             <li><a href="wealth-estimator.html">Wealth Estimator</a></li>
           </ul>
         </li>
+        <li><a href="blog.html">Blog</a></li>
         <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
         <li><a href="#">Contact</a></li>
       </ul>
@@ -53,15 +54,15 @@
   <div class="landing" style="min-height: 20vh;"></div>
 
   <article class="blog-article">
-    <a href="index.html" class="back">← Back</a>
+    <a href="blog.html" class="back">← Back to blog</a>
     <h1>What If You Had Maxed Your 401(k) Every Year?</h1>
-    <p class="meta">A backtest of max employee contributions invested in stocks and bonds (2004–2025).</p>
+    <p class="meta">A backtest of max employee contributions invested in stocks and bonds.</p>
 
     <p>
-      Suppose you contributed the IRS maximum to your 401(k) every year and invested it in a few simple strategies: 100% S&P 500, 100% NASDAQ, 100% Dow, 100% bonds (AGG), or an 80/20 stock–bond mix. How much would you have by 2025, and how much does your <em>start year</em> matter? I ran the numbers using historical limits, biweekly contributions, and adjusted prices.
+      Suppose you contributed the IRS maximum to your 401(k) every year and invested it in a few simple strategies. How much would you have by 2025, and how much does your <em>start year</em> matter? I ran the numbers using historical limits, biweekly contributions, and adjusted prices.
     </p>
     <div class="highlight-box">
-      Many people can’t max out their 401(k)—and that’s okay. This post uses the maximum to show what’s possible at the limit; <strong>even if you can’t hit the max, contributing as much as you can still puts time and compounding on your side.</strong>
+      Many people can’t max out their 401(k)—and that’s totally okay. This post uses the maximum to show what’s possible at the limit; <strong>even if you can’t hit the max, contributing as much as you can still puts time and compounding on your side.</strong>
     </div>
 
     <h2>How the backtest works</h2>
@@ -72,12 +73,12 @@
       <li><strong>Data:</strong> S&P 500, NASDAQ, Dow, and iShares Aggregate Bond ETF (AGG).</li>
       <li><strong>Assumptions:</strong> No fees, taxes, or inflation are included.</li>
       <li><strong>Exclusions:</strong> These calculations exclude employer matching and "catch-up" contributions for those age 50+.</li>
-      <li><strong>Period:</strong> The common comparison period starts in 2004 (when AGG data begins) and runs through early 2025.</li>
+      <li><strong>Period:</strong> The common comparison period starts in 2004 (when AGG data begins) and runs through end of 2025.</li>
     </ul>
 
     <h2>401(k) contribution limits over time</h2>
     <p>
-      The IRS raises the limit periodically to keep pace with inflation. It has more than tripled since 1989.
+      The amount you can contribute to a 401(k) each year from your paycheck—the employee elective deferral limit—is set by the IRS and applies per person, per year. The limit is adjusted periodically for inflation, so it has crept up over time: from about $7,600 in 1989 to $23,500 in 2025. That’s more than a tripling in nominal terms over the period. The chart below shows the limit for every year so you can see how the “max” we use in the backtest has changed.
     </p>
     <figure>
       <img src="images/1a_contribution_limits.png" alt="Bar chart of 401(k) annual contribution limit by year from 1989 to 2025." width="720" height="480">
@@ -86,7 +87,7 @@
 
     <h2>Portfolio value by strategy</h2>
     <p>
-      Below is the growth of a 401(k) that maxed contributions every year starting in 2004. The dashed line represents the <strong>Cumulative Contributions</strong>—the "break-even" point if you had simply kept the cash under a mattress.
+      Below is the growth of a 401(k) that maxed contributions every year starting in 2004. Each solid line is a different strategy: 100% S&P 500, 100% NASDAQ, 100% Dow Jones, 100% bonds (AGG), or an 80% stocks / 20% bonds mix. The dashed line is <strong>Cumulative Contributions</strong>—the total cash you put in, with no investment return. Anything above that line is the effect of market growth. Comparing the lines shows how much the choice of investment (and the period 2004–2025) changed the outcome.
     </p>
     <figure>
       <img src="images/1b_portfolio_value_by_strategy.png" alt="Line chart of portfolio value over time for S&P 500, NASDAQ, Dow, AGG, and 80/20 mix, plus cumulative contributions." width="720" height="480">
@@ -97,7 +98,9 @@
       <strong>The disparity is striking:</strong> While bonds (AGG) barely outpaced the total cash contributed, the NASDAQ transformed those same contributions into a multi-million dollar nest egg.
     </div>
 
-    <p>Summary by strategy (value as of 2025, sorted by final value). Cumulative contributions total <strong>0.40 M USD</strong>—use this to compare with each strategy’s final value below.</p>
+    <p>
+      The table below summarizes where each strategy landed by 2025. Total contributions over the period are <strong>0.40 M USD</strong>—the same for every row, since we assumed max contributions in each case. Final value (in millions) shows how much that cash became in each strategy; the <strong>growth multiple</strong> is final value divided by contributions (e.g. 3.5× means you ended with 3.5 times what you put in). Use the 0.40 M USD as the baseline: any multiple above 1× means investment returns added value on top of your contributions.
+    </p>
     <table>
       <thead>
         <tr><th>Strategy</th><th>Final Value (M USD)</th><th>Growth Multiple</th></tr>
@@ -111,34 +114,24 @@
       </tbody>
     </table>
 
-    <h2>Start year matters</h2>
+    <h2>Does start year matter?</h2>
     <p>
-      If you had started maxing your S&P 500 401(k) in 1990 versus 2010, your outcome would differ wildly. We measured this using the <strong>Growth Multiple</strong> (final value ÷ total contributed). 
+      When you start does affect your result. We measured that using the <strong>Growth Multiple</strong> (final value ÷ total contributed). The chart below shows the growth multiple for each start year over fixed 25-year contribution periods.
     </p>
     <p>
-      For example, a 5.56x multiple means that for every $1.00 you contributed, the market added an additional $4.56 in growth.
+      The takeaway: <strong>if you stay invested long enough, even bad timing still pays off.</strong> The unluckiest cohort—those whose 25-year window ended right in the 2008–2009 financial crisis—still achieved a growth multiple of about 2×. That means they doubled their contributions despite finishing at a market bottom. Time in the market, not timing the market, is what shows up in the data (I will post a follow-up on this soon).
     </p>
     <figure>
       <img src="images/1c_growth_multiple_by_start_year.png" alt="Bar chart of growth multiple by start year for S&P 500 401(k), value as of 2025." width="720" height="480">
-      <figcaption>S&P 500 401(k): growth multiple by start year (value as of 2025).</figcaption>
+      <figcaption>S&P 500 401(k): growth multiple by start year (averaging over 25-year contribution periods).</figcaption>
     </figure>
-    <p>
-      Earlier start years generally enjoy higher multiples due to the power of compounding and a longer "runway" to recover from market downturns.
-    </p>
-    <figure>
-      <img src="images/1d_final_value_by_start_year.png" alt="Bar chart of final portfolio value in millions USD by start year for S&P 500 401(k), value as of 2025." width="720" height="480">
-      <figcaption>S&P 500 401(k): final value (M USD) by start year (value as of 2025).</figcaption>
-    </figure>
-    <p>
-      Unsurprisingly, the final value drops as the start year gets later. You are contributing for fewer years and giving the money less time to work.
-    </p>
 
     <h2>The Bottom Line</h2>
     <p>
       Maxing your 401(k) is a powerful wealth-building tool, but the strategy you choose and the time you give it are the ultimate multipliers. 
     </p>
     <div class="highlight-box">
-      The "Start Year" data shows a clear trend: the best time to start maxing out your contributions was 20 years ago. <strong>The second best time is today.</strong>
+      No matter which start year you look at, the message is the same: the best time to start maxing out your contributions was 20 years ago. <strong>The second best time is today.</strong>
     </div>
 
     <p><a href="index.html">← Back to home</a></p>
