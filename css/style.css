@@ -263,6 +263,34 @@ body {
   background: #8fc5e8;
 }
 
+#contact .contact-success {
+  padding: 1.25rem;
+  background: rgba(126, 184, 218, 0.15);
+  border-radius: 8px;
+  border-left: 4px solid #7eb8da;
+}
+
+#contact .contact-success p {
+  margin: 0;
+  color: #fff;
+  font-size: 1.05rem;
+}
+
+#contact .contact-error {
+  margin: -0.5rem 0 1rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  color: #ffcccc;
+  font-weight: 500;
+  background: rgba(255, 100, 100, 0.25);
+  border-radius: 6px;
+  border-left: 3px solid #ff8080;
+}
+
+#contact .contact-form[hidden] {
+  display: none;
+}
+
 @media (max-width: 800px) {
   body {
     min-width: 0;
