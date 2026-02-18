@@ -141,7 +141,7 @@ body {
 }
 
 #about .about-inner {
-  max-width: 800px;
+  max-width: 920px;
   width: 100%;
   margin: 0 auto;
   background: rgba(0, 0, 0, 0.75);
@@ -160,7 +160,7 @@ body {
 
 #about h2 {
   margin: 0 0 1rem;
-  font-size: 1.35rem;
+  font-size: 1.22rem;
   font-weight: 600;
   color: #fff;
 }
@@ -170,6 +170,10 @@ body {
   color: rgba(255, 255, 255, 0.95);
   line-height: 1.7;
   font-size: 1.05rem;
+}
+
+#about .about-inner p + p {
+  margin-top: 1.25rem;
 }
 
 @media (max-width: 800px) {
