@@ -190,6 +190,31 @@ body {
   text-align: center;
 }
 
+#contact .contact-layout {
+  max-width: 900px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+}
+
+#contact .contact-column {
+  flex: 1 1 380px;
+  min-width: 0;
+}
+
+#contact .contact-column .contact-form {
+  text-align: left;
+}
+
+#contact .visitors-column {
+  flex: 0 1 260px;
+  min-width: 220px;
+  text-align: center;
+}
+
 #contact h2 {
   margin: 0 0 0.5rem;
   font-size: 1.25rem;
@@ -291,6 +316,40 @@ body {
   display: none;
 }
 
+/* Recent visitors (ClustrMaps) - small widget next to contact form */
+#contact .visitors-column h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+#contact .visitors-column .visitors-intro {
+  margin: 0 0 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+#contact .clustrmaps-widget {
+  width: 260px;
+  height: 180px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Scale and center ClustrMaps globe in the box */
+#contact .clustrmaps-widget > div {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+}
+
 @media (max-width: 800px) {
   body {
     min-width: 0;
@@ -331,5 +390,15 @@ body {
 
   #contact {
     padding: 2rem 1rem;
+  }
+
+  #contact .contact-layout {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #contact .visitors-column {
+    width: 100%;
+    max-width: 260px;
   }
 }

@@ -42,8 +42,9 @@
   </section>
 
   <section id="contact">
-    <div class="contact-inner">
-      <h2>Get in touch</h2>
+    <div class="contact-inner contact-layout">
+      <div class="contact-column">
+        <h2>Get in touch</h2>
       <p class="contact-intro">Send me a message and I’ll get back to you.</p>
       <div id="contact-success" class="contact-success" hidden>
         <p>Thanks! Your message was sent. I’ll get back to you soon.</p>
@@ -61,8 +62,17 @@
         <textarea id="contact-message" name="message" required rows="5" placeholder="Your message..."></textarea>
         <button type="submit">Send</button>
       </form>
+      </div>
+      <div class="visitors-column">
+        <h3>Recent visitors</h3>
+        <p class="visitors-intro">See where visitors are located.</p>
+        <div class="clustrmaps-widget">
+          <script type="text/javascript" id="clstr_globe" src="https://clustrmaps.com/globe.js?d=qpb0kQlzPWosS4OrIQS5iBTRJ9AaESxacrSADh5xIkk"></script>
+        </div>
+      </div>
     </div>
   </section>
+
   <script>
     (function() {
       var form = document.getElementById('contact-form');
