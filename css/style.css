@@ -331,23 +331,24 @@ body {
   line-height: 1.4;
 }
 
-#contact .clustrmaps-widget {
-  width: 260px;
-  height: 180px;
+#contact .visitors-widget {
+  width: 220px;
+  height: 220px;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
-/* Scale and center ClustrMaps globe in the box */
-#contact .clustrmaps-widget > div {
+/* Widget is built for 320px; render at native size and scale into the 220px box so its label doesn't clip */
+#contact .visitors-widget iframe {
+  display: block;
+  width: 320px;
+  height: 320px;
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0.6);
+  top: 0;
+  left: 0;
+  transform: scale(0.6875);
+  transform-origin: top left;
 }
 
 @media (max-width: 800px) {
