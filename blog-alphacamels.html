@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An open dataset of dynamic AlphaEarth embeddings for 671 US basins — Reza Ehsani</title>
+  <meta name="description" content="Publishing the per-year AlphaEarth Foundations basin-mean embeddings for the CAMELS-US 671 basins, with a small Python package to grab spatial embeddings on demand.">
+  <link rel="canonical" href="https://rehsani.github.io/blog-alphacamels.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
+    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
+    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
+    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
+    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
+    .blog-article figure { margin: 1.5rem 0; }
+    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
+    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+    .blog-article a { color: #7eb8da; text-decoration: none; }
+    .blog-article a:hover { text-decoration: underline; }
+    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+    .blog-article pre { background: rgba(255,255,255,0.05); border-radius: 6px; padding: 1rem 1.25rem; overflow-x: auto; }
+    .blog-article code { color: #cfe5f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; }
+    .blog-article pre code { display: block; line-height: 1.5; }
+    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <nav>
+      <a href="index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Rent Index</a></li>
+            <li><a href="#">Wealth Estimator</a></li>
+          </ul>
+        </li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="blog-article">
+    <p><a href="blog.html" class="back">← Back to all posts</a></p>
+    <h1>An open dataset of dynamic AlphaEarth embeddings for the 671 CAMELS-US basins</h1>
+    <div class="meta">June 2026 · with Hoshin V. Gupta · 6-min read</div>
+
+    <p>Foundation models for the Earth have started landing as open assets. <a href="https://deepmind.google/discover/blog/alphaearth-foundations-helps-map-our-planet-in-unprecedented-detail/" target="_blank">AlphaEarth Foundations</a>, from Google DeepMind, ships a 64-dimensional per-pixel embedding of the planet at roughly 10-metre resolution, refreshed annually since 2017. It's the kind of asset that quietly rewrites what counts as a "basin attribute" in hydrology.</p>
+
+    <p>A recent <a href="https://arxiv.org/abs/2601.01558" target="_blank">arXiv preprint</a> showed something striking: take the mean AlphaEarth vector inside each CAMELS-US basin polygon (one 64-vector per basin), feed it to a standard CAMELS-LSTM as a static catchment attribute, and you outperform <a href="https://doi.org/10.5194/hess-21-5293-2017" target="_blank">Addor et al.'s 2017</a> hand-crafted attributes — NSE 0.61 vs 0.55 — using literally no other change. The paper reported numbers but didn't publish the embeddings, and they used the time-averaged static mean. That's a tiny seam to slip through, and it's what this post is about.</p>
+
+    <h2>What we made</h2>
+
+    <p>We extracted the per-basin AlphaEarth mean for every CAMELS-US basin (671 catchments) and every year 2017–2025, and packaged the result as an open dataset on <a href="https://doi.org/10.5281/zenodo.20763674" target="_blank">Zenodo</a> with a permanent DOI and a small Python tool. The tensor shape is <code>(671, 9, 64)</code> — 671 basins × 9 years × 64 dimensions. So instead of one static vector per basin, you get a yearly stack you can use as a <em>dynamic</em> LSTM input. Land-use change, vegetation phenology, slow climate signals — they're all in there, and the time-average smears them away.</p>
+
+    <h2>Using it</h2>
+
+    <p>The companion Python package, <a href="https://github.com/rehsani/alphacamels" target="_blank"><code>alphacamels</code></a>, gives you three functions:</p>
+
+    <pre><code>from alphacamels import get_basin_mean, get_basin_static_mean, get_basin_embedding_grid
+
+# (9, 64) xarray DataArray, loaded from disk -- no network call.
+yearly = get_basin_mean("06614800")
+
+# (64,) -- the Qu-et-al.-style static input.
+static = get_basin_static_mean("06614800")
+
+# (year, band, y, x) -- the full polygon-clipped pixel grid,
+# pulled on demand from the public GeoZarr mosaic.
+spatial = get_basin_embedding_grid("06614800", years=[2020])
+</code></pre>
+
+    <p>The <code>get_basin_embedding_grid</code> piece is the part I want to highlight. The full per-basin pixel grid for all 671 CAMELS basins would be far too large to publish. So we publish the basin means and ship a tool that pulls the spatial grid for the basins you actually need. A small thing, but it changes who can use this.</p>
+
+    <h2>How we know it's right</h2>
+
+    <p>The reconstruction from the public mosaic is non-trivial: it's <em>int8</em>-quantized with a square-law dequantization, the chunks are sharded zarr v3, the mosaic is in EPSG:4326 (so cos-latitude weighting matters for the spatial mean), and the polygon mask has to be center-based to match Earth Engine's <code>reduceRegion</code> semantics. We validated end-to-end against Earth Engine on the median CAMELS basin: cosine similarity <strong>0.99999996</strong>, max per-band absolute difference <strong>2.3 × 10⁻⁵</strong> on values of magnitude ~0.1. We also confirmed bit-identical outputs across two different machines. Everything checked.</p>
+
+    <h2 id="data-availability">Where to grab it</h2>
+
+    <ul>
+      <li><strong>Dataset (with DOI):</strong> <a href="https://doi.org/10.5281/zenodo.20763674" target="_blank">10.5281/zenodo.20763674</a></li>
+      <li><strong>Code &amp; tool:</strong> <a href="https://github.com/rehsani/alphacamels" target="_blank">github.com/rehsani/alphacamels</a></li>
+      <li><strong>Preprint:</strong> arXiv (link coming once it clears moderation)</li>
+    </ul>
+
+    <p>If you build something with this, send me a note via the contact link in the header. I'd love to see where it ends up.</p>
+  </main>
+</body>
+</html>
