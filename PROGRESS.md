@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-07-10 14:15:47
+
+Reframed the Urmia post so the tool leads: title/h1 "An Open-Source Tool for Watching Lakes from Space", meta + intro name lake-area-gee up front, water-map caption credits the tool. Added "Lake Area from Space" to the Tools dropdown on all 6 HTML pages; updated blog.html index title. Repo side: README links the post, description + 6 topics set. Profile pinning is manual (API mutation removed).
+
+## 2026-07-10 13:57:00
+
+Rewrote blog-urmia.html for a general audience: acronyms spelled out (MNDWI, NASA/USGS Landsat, ESA Sentinel-2, Google Earth Engine explained), jargon replaced with plain language, scale anchor (7,000 km² > Delaware), caveats reframed as general satellite-measurement lessons.
+
+## 2026-07-10 13:45:52
+
+Added the Lake Urmia blog post: blog-urmia.html (matches blog-timing.html template), 4 figures from lake-area-gee/outputs into images/, entries in blog.html index and sitemap.xml. Covers the 42-year record, method, results, five uncertainty caveats, and links the lake-area-gee repo.
+
 ## 2026-07-04 18:16:33
 
 - Removed the GA4 tag (G-23RL82K794) from <head> per request — no analytics/map on the site for now. Visitors-column CSS left untouched (dead but ready).
