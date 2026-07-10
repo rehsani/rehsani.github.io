@@ -137,10 +137,17 @@
         "land" and "water" blur into wet, salty crust. Small changes in the cutoff move the measured area,
         so every point in the charts carries an uncertainty range computed by re-running the measurement
         with stricter and looser cutoffs. The range is narrow when the lake is full and wide when it is low.</li>
-      <li><strong>Different satellites disagree in winter.</strong> In summer, Landsat and Sentinel-2 agree
-        to within a fraction of a percent — a strong sign the method is sound. In winter their built-in
-        snow-and-ice detectors behave differently, and the two can disagree by tens of percent. Knowing
-        <em>when</em> your instruments agree is as important as knowing that they agree.</li>
+      <li><strong>Different satellites disagree in winter — and the reason is instructive.</strong> In
+        summer, Landsat and Sentinel-2 agree to within a fraction of a percent — a strong sign the method
+        is sound. In winter they can disagree by tens of percent. The disagreement is not about water: it
+        is about ice. Each mission ships its own algorithm for labeling snow and ice pixels (NASA/USGS and
+        ESA built them independently), and those labeled pixels are what get removed before measuring the
+        lake. A winter lake surface is exactly the ambiguous stuff the two algorithms judge differently —
+        thin ice, slushy brine, snow on wet salt crust — and Landsat's labels more of it as ice, so it
+        reports a smaller lake. Underneath sits a question with no clean answer: does a frozen surface
+        count as lake area? In summer there is no ice, both algorithms go quiet, and the two satellites
+        see the same shoreline. Knowing <em>when</em> your instruments agree matters as much as knowing
+        that they agree.</li>
       <li><strong>"Area" depends on the definition.</strong> This method measures everything that is wet —
         including shallow, centimeters-deep sheets of brine on the salt flats. Figures quoted in the news
         usually mean deeper open water, so they run lower. The <em>shape</em> of the trend is far more
