@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-07-10 14:46:00
+
+Expanded the winter-divergence caveat in blog-urmia.html: now explains WHY the sensors disagree (independent NASA/USGS vs ESA snow/ice classifiers decide which pixels get removed; winter lake surfaces are the ambiguous cases they judge differently; frozen-surface-as-area has no clean answer) instead of only stating that they disagree.
+
 ## 2026-07-10 14:15:47
 
 Reframed the Urmia post so the tool leads: title/h1 "An Open-Source Tool for Watching Lakes from Space", meta + intro name lake-area-gee up front, water-map caption credits the tool. Added "Lake Area from Space" to the Tools dropdown on all 6 HTML pages; updated blog.html index title. Repo side: README links the post, description + 6 topics set. Profile pinning is manual (API mutation removed).
