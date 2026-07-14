@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An Open-Source Tool for Watching Lakes from Space — Reza Ehsani</title>
+  <meta name="description" content="I built lake-area-gee, an open-source tool that measures any lake or reservoir from free satellite imagery. Here is what it reveals about Lake Urmia's 42-year decline.">
+  <link rel="canonical" href="https://rehsani.github.io/blog-urmia.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
+    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
+    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
+    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
+    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
+    .blog-article figure { margin: 1.5rem 0; }
+    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
+    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+    .blog-article a { color: #7eb8da; text-decoration: none; }
+    .blog-article a:hover { text-decoration: underline; }
+    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+    .blog-article .img-pair { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .blog-article .img-pair figure { flex: 1 1 300px; margin: 0.5rem 0; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <nav>
+      <a href="index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Rent Index</a></li>
+            <li><a href="#">Wealth Estimator</a></li>
+            <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
+            <li><a href="https://github.com/rehsani/alphacamels" target="_blank">AlphaCAMELS</a></li>
+          </ul>
+        </li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="landing" style="min-height: 20vh;"></div>
+
+  <article class="blog-article">
+    <a href="blog.html" class="back">← Back to blog</a>
+    <h1>An Open-Source Tool for Watching Lakes from Space</h1>
+    <p class="meta">I built <a href="https://github.com/rehsani/lake-area-gee" target="_blank">lake-area-gee</a>,
+    a free tool that measures the surface area of any lake or reservoir from public satellite imagery.
+    Here is what it reveals about one of the world's great salt lakes.</p>
+
+    <p>
+      Lake Urmia, in northwest Iran, was once one of the largest salt lakes on Earth — in wet years it
+      spread over 7,000 square kilometers, an area larger than the U.S. state of Delaware. Over the last
+      three decades it has lost most of its water to upstream dams, irrigation, and drought. It is a
+      slow-motion environmental crisis, and it is big enough to watch from orbit. I wanted to answer a
+      simple question: how well can an individual measure this, using <em>only free, publicly available
+      satellite images</em>? So I built an open-source tool —
+      <a href="https://github.com/rehsani/lake-area-gee" target="_blank">lake-area-gee</a> — to find out.
+      The answer: remarkably well. Everything you see below is its output.
+    </p>
+
+    <h2>The idea</h2>
+    <p>
+      Two families of Earth-observation satellites photograph every spot on the planet, week in and week
+      out, and give the images away for free: <strong>Landsat</strong> (run by NASA and the U.S. Geological
+      Survey, taking pictures since 1984) and <strong>Sentinel-2</strong> (run by the European Space Agency,
+      since 2015). Their cameras record not just visible light but also invisible colors, like infrared —
+      and that is the trick. Water is one of the few surfaces on Earth that reflects green light but
+      swallows infrared almost completely. Land does the opposite.
+    </p>
+    <p>
+      So for every pixel in an image, you compute a simple score from the green and infrared measurements —
+      the standard version is called the Modified Normalized Difference Water Index (MNDWI). Water pixels
+      score high, land pixels score low. Pick a cutoff between the two, count the pixels above it, multiply
+      by the ground area each pixel covers, and you have the lake's surface area on that date. Repeat for
+      every date since 1984 and you have the lake's history.
+    </p>
+    <p>
+      The images add up to terabytes, but a platform called Google Earth Engine stores the entire archive
+      and lets you run the math on Google's computers for free (for research and non-commercial use). Only
+      the final numbers come back to your laptop, so the whole 42-year record computes in minutes, without
+      downloading a single image.
+    </p>
+
+    <div class="img-pair">
+      <figure>
+        <img src="images/urmia-truecolor-2020-07.png" alt="Satellite photo of Lake Urmia, July 2020">
+        <figcaption>Lake Urmia as the satellite sees it — July 2020, Sentinel-2.</figcaption>
+      </figure>
+      <figure>
+        <img src="images/urmia-watermask-2020-07.png" alt="Computed water map for the same scene">
+        <figcaption>The water map lake-area-gee computes from the same image: 4,686 square kilometers.</figcaption>
+      </figure>
+    </div>
+
+    <h2>What 42 years look like</h2>
+    <figure>
+      <img src="images/urmia-seasonal-s2-vs-landsat.png" alt="Surface-area history of Lake Urmia, 1984 to 2026, from Landsat and Sentinel-2">
+      <figcaption>Top: the full Landsat record, one point per season. Bottom: recent years measured by both
+      satellite families independently — in summer they agree to within a fraction of a percent.</figcaption>
+    </figure>
+    <p>
+      The trajectory is stark. Through the mid-1990s the lake regularly exceeded 7,000 square kilometers.
+      By the early 2020s a typical summer footprint was under 4,000. Along the way the record captures a
+      brief recovery around 2019–2020 (after wet winters and restoration releases), a new low in 2023–2025,
+      and a partial rebound after the wet 2025–26 winter. The zigzag riding on top of the long trend is not
+      noise — it is the lake breathing with the seasons: spring snowmelt from the surrounding mountains
+      fills it, and summer evaporation draws it back down.
+    </p>
+    <p>
+      Comparing like with like — the same month (July), the same satellite family (Landsat), sparse years
+      excluded — puts numbers on it. The July record peaks in 1995 at 7,705 square kilometers and bottoms
+      out in 2025 at 3,292: a <strong>57% loss</strong>. Over the two decades of steady decline
+      (1995–2015), the lake shrank by about <strong>190 square kilometers per year</strong> — half a
+      square kilometer <em>every day</em>, for twenty years. Put another way: the average July lake of
+      1994–1999 was 6,672 square kilometers; the average of 2020–2025 is 3,876 — a 42% smaller lake within
+      one generation.
+    </p>
+    <figure>
+      <img src="images/urmia-monthly-s2.png" alt="Monthly surface-area measurements, 2017 to 2026">
+      <figcaption>Month-by-month measurements from Sentinel-2 (2017–2026) resolve that seasonal breathing in detail.</figcaption>
+    </figure>
+
+    <h2>What can go wrong (and how to be honest about it)</h2>
+    <p>
+      A number without its caveats is a trap. Measuring a lake from space has a few, and they are worth
+      understanding because they apply to almost any satellite-based measurement you will ever read about:
+    </p>
+    <ul>
+      <li><strong>Snow looks like water.</strong> To the water score, fresh snow and open water are nearly
+        identical. One January, the raw method reported 12,469 square kilometers — three times the actual
+        lake — because it counted snow on the surrounding mountains as water. The fix is to detect snow
+        separately and remove it, and to discard winter months too snowbound to trust.</li>
+      <li><strong>The shoreline is genuinely fuzzy.</strong> Urmia's margins are flat salt flats where
+        "land" and "water" blur into wet, salty crust. Small changes in the cutoff move the measured area,
+        so every point in the charts carries an uncertainty range computed by re-running the measurement
+        with stricter and looser cutoffs. The range is narrow when the lake is full and wide when it is low.</li>
+      <li><strong>Different satellites disagree in winter — and the reason is instructive.</strong> In
+        summer, Landsat and Sentinel-2 agree to within a fraction of a percent — a strong sign the method
+        is sound. In winter they can disagree by tens of percent. The disagreement is not about water: it
+        is about ice. Each mission ships its own algorithm for labeling snow and ice pixels (NASA/USGS and
+        ESA built them independently), and those labeled pixels are what get removed before measuring the
+        lake. A winter lake surface is exactly the ambiguous stuff the two algorithms judge differently —
+        thin ice, slushy brine, snow on wet salt crust — and Landsat labels more of it as ice, so it
+        reports a smaller lake. Underneath sits a question with no clean answer: does a frozen surface
+        count as lake area? In summer there is no ice, both algorithms go quiet, and the two satellites
+        see the same shoreline. Knowing <em>when</em> your instruments agree matters as much as knowing
+        that they agree.</li>
+      <li><strong>"Area" depends on the definition.</strong> This method measures everything that is wet —
+        including shallow, centimeters-deep sheets of brine on the salt flats. Figures quoted in the news
+        usually mean deeper open water, so they run lower. The <em>shape</em> of the trend is far more
+        trustworthy than any single number.</li>
+      <li><strong>The early record is thin.</strong> In the 1980s, only a handful of usable images exist per
+        season. Those points are flagged as lower-confidence rather than silently mixed in with the rest.</li>
+    </ul>
+
+    <div class="highlight-box">
+      Every number in these charts came from imagery anyone can access for free, processed with free tools.
+      Environmental monitoring at this scale used to require an agency budget; now it requires curiosity
+      and a free Google Earth Engine account.
+    </div>
+
+    <h2>Use it for your lake</h2>
+    <p>
+      Nothing here is specific to Lake Urmia — the same physics works for any lake, reservoir, or dam on
+      Earth, and that is the point of
+      <a href="https://github.com/rehsani/lake-area-gee" target="_blank">lake-area-gee</a>. Point it at a
+      different water body by giving it the corner coordinates of a rectangle around it, pick a satellite
+      and a date range, and it produces the same charts, uncertainty ranges, and quality-check images you
+      see here. The math at its core is automatically tested, every caveat above is documented in the
+      repository's method notes, and the README walks through setup from zero. If you use it for a water
+      body you care about, I would love to hear about it.
+    </p>
+  </article>
+</body>
+</html>

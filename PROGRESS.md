@@ -2,7 +2,27 @@
 
 ## 2026-07-14 09:42:20
 
-- Added an "AlphaCAMELS" entry to the Tools dropdown linking to https://github.com/rehsani/alphacamels (opens in new tab) across all 5 pages: index.html, blog.html, blog-401k.html, blog-timing.html, blog-alphacamels.html. Placeholder tools (Rent Index, Wealth Estimator) kept per request.
+- Added an "AlphaCAMELS" entry to the Tools dropdown linking to https://github.com/rehsani/alphacamels (opens in new tab) across all 6 pages: index.html, blog.html, blog-401k.html, blog-timing.html, blog-alphacamels.html, blog-urmia.html. Sits alongside the existing "Lake Area from Space" tool; placeholder tools (Rent Index, Wealth Estimator) kept per request. Merged origin/main (Urmia post + Lake Area tool) into the branch, resolving the Tools-dropdown conflict to keep both tools.
+
+## 2026-07-10 14:52:10
+
+Added trend numbers to blog-urmia.html (new paragraph after the 42-year figure): July Landsat peak 1995 = 7,705 km² → 2025 = 3,292 (−57%); Sen-slope decline 1995–2015 ≈ −190 km²/yr ("half a square kilometer every day for twenty years"); July means 1994–99 = 6,672 vs 2020–25 = 3,876 (−42%). Numbers computed from urmia_july_landsat_1984_2025.csv, ok-status non-low-n rows only. Proofread pass: fixed "Landsat's labels" → "Landsat labels", made decade-comparison years explicit (1994–1999 / 2020–2025).
+
+## 2026-07-10 14:46:00
+
+Expanded the winter-divergence caveat in blog-urmia.html: now explains WHY the sensors disagree (independent NASA/USGS vs ESA snow/ice classifiers decide which pixels get removed; winter lake surfaces are the ambiguous cases they judge differently; frozen-surface-as-area has no clean answer) instead of only stating that they disagree.
+
+## 2026-07-10 14:15:47
+
+Reframed the Urmia post so the tool leads: title/h1 "An Open-Source Tool for Watching Lakes from Space", meta + intro name lake-area-gee up front, water-map caption credits the tool. Added "Lake Area from Space" to the Tools dropdown on all 6 HTML pages; updated blog.html index title. Repo side: README links the post, description + 6 topics set. Profile pinning is manual (API mutation removed).
+
+## 2026-07-10 13:57:00
+
+Rewrote blog-urmia.html for a general audience: acronyms spelled out (MNDWI, NASA/USGS Landsat, ESA Sentinel-2, Google Earth Engine explained), jargon replaced with plain language, scale anchor (7,000 km² > Delaware), caveats reframed as general satellite-measurement lessons.
+
+## 2026-07-10 13:45:52
+
+Added the Lake Urmia blog post: blog-urmia.html (matches blog-timing.html template), 4 figures from lake-area-gee/outputs into images/, entries in blog.html index and sitemap.xml. Covers the 42-year record, method, results, five uncertainty caveats, and links the lake-area-gee repo.
 
 ## 2026-07-04 18:16:33
 
