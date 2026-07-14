@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-07-14 09:42:20
+
+- Added an "AlphaCAMELS" entry to the Tools dropdown linking to https://github.com/rehsani/alphacamels (opens in new tab) across all 5 pages: index.html, blog.html, blog-401k.html, blog-timing.html, blog-alphacamels.html. Placeholder tools (Rent Index, Wealth Estimator) kept per request.
+
 ## 2026-07-04 18:16:33
 
 - Removed the GA4 tag (G-23RL82K794) from <head> per request — no analytics/map on the site for now. Visitors-column CSS left untouched (dead but ready).
