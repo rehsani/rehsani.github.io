@@ -1,0 +1,105 @@
+:root {
+  --bg: #0d0d0d;
+  --panel: #16181d;
+  --panel-2: #1c1f26;
+  --border: rgba(255, 255, 255, 0.10);
+  --ink: #ffffff;
+  --muted: rgba(255, 255, 255, 0.60);
+  --faint: rgba(255, 255, 255, 0.42);
+  --accent: #7eb8da;
+  --accent-ink: #0d1b24;
+}
+
+* { box-sizing: border-box; }
+html, body { max-width: 100%; overflow-x: hidden; }
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+/* --- Site top bar (matches rehsani.github.io) --- */
+.site-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; padding: 0.85rem 1.75rem;
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid var(--border);
+}
+.site-bar .site-name { color: #fff; font-weight: 700; font-size: 1.35rem; text-decoration: none; }
+.site-nav { display: flex; gap: 1.5rem; }
+.site-nav a { color: #fff; text-decoration: none; font-size: 0.95rem; }
+.site-nav a:hover { color: var(--accent); }
+
+/* --- Tool header --- */
+.tool-header { padding: 1.75rem 1.75rem 0.5rem; max-width: 1400px; }
+.tool-header h1 { margin: 0 0 0.5rem; font-size: 1.7rem; font-weight: 700; }
+.tool-header .sub { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.6; max-width: 900px; }
+.tool-header .disclaimer {
+  max-width: 900px; margin: 0.9rem 0 0; padding: 0.7rem 0.95rem;
+  font-size: 0.8rem; line-height: 1.55; color: rgba(255, 255, 255, 0.82);
+  background: rgba(224, 190, 90, 0.10); border: 1px solid rgba(224, 190, 90, 0.35);
+  border-radius: 8px;
+}
+.tool-header .disclaimer strong { color: #e7c56a; }
+
+/* --- Layout --- */
+main { display: flex; gap: 1.25rem; padding: 1.25rem 1.75rem 2rem; align-items: flex-start; }
+
+#controls {
+  flex: 0 0 290px; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem 1.15rem; display: flex; flex-direction: column; gap: 1.15rem;
+}
+#controls label { display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.82rem; font-weight: 600; color: var(--ink); }
+#controls label span { color: var(--accent); font-weight: 700; font-size: 0.95rem; }
+#controls small { font-weight: 400; color: var(--muted); font-size: 0.72rem; line-height: 1.45; }
+#controls input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+#controls select {
+  padding: 0.5rem 0.6rem; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--panel-2); color: var(--ink); font-size: 0.85rem; font-family: inherit;
+}
+
+/* --- Map --- */
+#map-wrap {
+  flex: 1; min-width: 0; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 12px; padding: 0.6rem;
+}
+#map { width: 100%; max-width: 100%; height: auto; display: block; }
+.county { stroke: rgba(255, 255, 255, 0.35); stroke-width: 0.2; }
+.state-border { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 0.6; pointer-events: none; }
+#summary { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 0.3rem 0 0.5rem; }
+
+/* --- Legend --- */
+#legend { margin-top: 0.2rem; }
+#legend-label { font-size: 0.78rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--ink); }
+#legend-bar { height: 12px; border-radius: 4px; border: 1px solid var(--border); }
+.legend-ends { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; }
+
+/* --- Footer / assumptions --- */
+footer { padding: 0 1.75rem 2.5rem; color: var(--muted); font-size: 0.8rem; max-width: 1000px; }
+footer summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+footer summary:hover { color: var(--accent); }
+footer ul { line-height: 1.6; }
+footer li { margin: 0.4rem 0; }
+footer b { color: rgba(255, 255, 255, 0.85); }
+
+/* --- Tooltip --- */
+#tooltip {
+  position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.1s;
+  background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); padding: 0.6rem 0.75rem; font-size: 0.78rem;
+  z-index: 10; color: var(--ink);
+}
+#tooltip .tt-title { font-weight: 700; margin-bottom: 0.3rem; }
+#tooltip table { border-collapse: collapse; }
+#tooltip td { padding: 1px 0.5rem 1px 0; color: var(--muted); }
+#tooltip td:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+#tooltip .tt-total { font-weight: 700; border-top: 1px solid var(--border); }
+#tooltip .tt-total td { color: var(--ink); }
+
+@media (max-width: 760px) {
+  main { flex-direction: column; align-items: stretch; padding: 1rem; gap: 1rem; }
+  #controls, #map-wrap { flex: none; width: 100%; }
+  .tool-header, footer { padding-left: 1rem; padding-right: 1rem; }
+  .site-bar { padding: 0.75rem 1rem; }
+}
