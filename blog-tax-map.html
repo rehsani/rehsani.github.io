@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What Taxes Do You Actually Pay? — Reza Ehsani</title>
+  <meta name="description" content="Federal income tax, FICA, Medicare, state and local income tax, sales tax, property tax: what they are and how your total depends on your income, spending, and home. Plus an interactive US map to estimate your own.">
+  <link rel="canonical" href="https://rehsani.github.io/blog-tax-map.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
+    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
+    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
+    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
+    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
+    .blog-article figure { margin: 1.5rem 0; }
+    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); }
+    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+    .blog-article a { color: #7eb8da; text-decoration: none; }
+    .blog-article a:hover { text-decoration: underline; }
+    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+    .blog-article .disclaimer-box { background: rgba(240, 190, 90, 0.1); border-left: 4px solid #e0be5a; padding: 0.85rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: rgba(255,255,255,0.9); font-size: 0.92rem; }
+    .blog-article .launch { display: inline-block; margin: 0.5rem 0 0.5rem; background: #7eb8da; color: #10202b; font-weight: 700; padding: 0.7rem 1.3rem; border-radius: 8px; text-decoration: none; }
+    .blog-article .launch:hover { background: #9ccbe6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <nav>
+      <a href="index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle">Tools</a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Rent Index</a></li>
+            <li><a href="#">Wealth Estimator</a></li>
+            <li><a href="tax-tool/index.html">US Tax Map</a></li>
+            <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
+          </ul>
+        </li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="landing" style="min-height: 20vh;"></div>
+
+  <article class="blog-article">
+    <a href="blog.html" class="back">← Back to blog</a>
+    <h1>What Taxes Do You Actually Pay?</h1>
+    <p class="meta">Everyone argues about taxes, but few people can name all the ones they actually pay.
+    Here is the whole stack, and a map to estimate your own.</p>
+
+    <div class="disclaimer-box">
+      <strong>This is not tax advice.</strong> Everything below, and the tool it links to, is for
+      education only. It is a rough estimate, not tax, legal, or financial advice, so talk to a
+      qualified professional about your own situation. The tool's tax data is current as of
+      <strong>July 2026</strong> (2025 tax-year rules).
+    </div>
+
+    <p>
+      Taxes come up all the time: in the news, at dinner, at the ballot box. Yet most people cannot
+      actually list all the taxes that come out of their money each year. We feel the total, argue
+      about one slice of it, and rarely see the whole picture. So here is the full stack in plain
+      terms, followed by a tool I built so you can estimate it for your own situation.
+    </p>
+
+    <h2>1. Federal income tax: the brackets</h2>
+    <p>
+      This is the big one. The federal government taxes income in tiers: the first slice at 10%, then
+      12%, 22%, 24%, 32%, 35%, and 37% at the very top. These are <em>marginal</em> rates, which is
+      where people trip up. Landing in a higher bracket does not tax all of your income at that rate,
+      only the dollars above the bracket line. That is why your effective rate, the total you pay
+      divided by what you earn, always comes out below your top bracket. A single filer on $100,000
+      owes about $13,000 in federal income tax, closer to a 13% effective rate than the 22% bracket
+      they sit in.
+    </p>
+
+    <h2>2. FICA: Social Security and Medicare</h2>
+    <p>
+      Separate from income tax, and easy to forget because your employer withholds it automatically,
+      is the payroll tax on your wages:
+    </p>
+    <ul>
+      <li><strong>Social Security</strong> takes 6.2% of your wages, but only up to a yearly cap (about
+        $176,100 in 2025). Earn more than the cap and this one stops.</li>
+      <li><strong>Medicare</strong> takes 1.45% of all your wages with no cap, plus an extra 0.9% on
+        anything above $200,000 (single) or $250,000 (married).</li>
+    </ul>
+    <p>
+      For a typical wage earner that is another 7.65% off the top, on top of income tax. If your money
+      comes from retirement or investments rather than a paycheck, you do not pay it, which is why the
+      tool lets you switch the income type.
+    </p>
+
+    <h2>3. State and local income tax</h2>
+    <p>
+      Then your state takes a cut, or it doesn't. Nine states, including Texas, Florida, and
+      Washington, have no income tax on wages at all. The rest range from a flat few percent up to
+      13.3% at the top in California. Some places also stack a local income tax on top: cities and
+      counties in Ohio, Pennsylvania, Maryland, and Indiana, plus New York City, among others. Two
+      people on the same salary can owe very different amounts depending on where they live.
+    </p>
+
+    <h2>4. Sales tax: on what you spend</h2>
+    <p>
+      This one keys off spending, not income. Every taxable purchase adds a combined state, county, and
+      city rate that runs from zero in a few states to over 10% in parts of Louisiana, Illinois, and
+      Washington. Not all of your spending is taxed, though. Rent isn't, and in many states groceries
+      and services aren't either. What matters is the share of your spending that is actually taxable,
+      so the tool lets you set that share with a slider and applies the local sales rate to it.
+    </p>
+
+    <h2>5. Property tax: on your home</h2>
+    <p>
+      If you own a home, your county taxes its value every year. Effective rates swing widely by
+      location, from under 0.4% in parts of Hawaii and Alabama to over 2% across New Jersey, Illinois,
+      and much of Texas. On a $400,000 home that is the gap between roughly $1,500 and $8,000 a year,
+      for the same house.
+    </p>
+
+    <h2>Your total depends on your situation</h2>
+    <p>
+      There is no single "tax rate." What you actually pay comes out of how a handful of things about
+      you interact:
+    </p>
+    <ul>
+      <li>your <strong>filing status</strong>, which sets the brackets and the standard deduction;</li>
+      <li>how much you <strong>earn</strong>, which drives federal, state, local, and payroll taxes;</li>
+      <li>how much you <strong>spend</strong>, which drives sales tax;</li>
+      <li>what your <strong>home is worth</strong>, which drives property tax;</li>
+      <li>and <strong>where you live</strong>, which sets the state, local, sales, and property rates.</li>
+    </ul>
+    <p>
+      Change any one of them and the total moves. Someone with a high salary who rents in Texas can end
+      up with a very different bill from someone who earns less but owns an expensive home in New
+      Jersey, before you even compare their paychecks.
+    </p>
+
+    <h2>So I built a map</h2>
+    <p>
+      Rather than keep this abstract, I put it into a tool you can drive with your own numbers. Set
+      your income, monthly spending, home value, filing status, and income type, and it shows the total
+      annual tax you would pay in every county in the country, updating as you move the sliders. Hover
+      over any county to see the full breakdown.
+    </p>
+
+    <figure>
+      <a href="tax-tool/index.html">
+        <img src="images/tax-map-tool.png" alt="Interactive US tax map showing total annual tax by county">
+      </a>
+      <figcaption>The interactive tool. Click the map, or the button below, to try it with your own numbers.</figcaption>
+    </figure>
+
+    <p><a href="tax-tool/index.html" class="launch">Open the US Tax Map →</a></p>
+
+    <p>
+      The rates behind it come from public sources: the IRS and the Tax Foundation for federal and
+      state brackets, the Census Bureau for property, the Streamlined Sales Tax project and state
+      revenue departments for sales, and municipal registers for local income tax. It is an estimate,
+      not a tax return. It models wage or retirement income with the standard deduction and leaves out
+      the many credits and special cases a real filing involves. You can find the full list of
+      assumptions inside the tool. And, one more time, this is not tax advice.
+    </p>
+  </article>
+</body>
+</html>

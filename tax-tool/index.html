@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>US Tax Map — total tax by county</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/vendor/d3.v7.min.js"></script>
+  <script src="js/vendor/topojson-client.v3.min.js"></script>
+</head>
+<body>
+  <header class="site-bar">
+    <a href="../index.html" class="site-name">Reza Ehsani</a>
+    <nav class="site-nav">
+      <a href="../index.html">Home</a>
+      <a href="../blog-tax-map.html">Write-up</a>
+      <a href="../blog.html">Blog</a>
+    </nav>
+  </header>
+
+  <header class="tool-header">
+    <h1>How much tax would you pay, by county?</h1>
+    <p class="sub">Set your income, spending, home value and filing status, and see the total annual tax
+      you would pay in every US county, live. It combines federal (income, Social Security, Medicare),
+      state and local income, sales, and property tax.</p>
+    <p class="disclaimer"><strong>Not tax advice.</strong> A rough estimate for education only, not tax,
+      legal or financial advice; check your own situation with a qualified professional. Data current as
+      of <strong>July 2026</strong> (2025 tax-year rules).</p>
+  </header>
+
+  <main>
+    <aside id="controls">
+      <label>Gross annual income <span id="income-val"></span>
+        <input type="range" id="income" min="20000" max="1000000" step="5000" value="100000" />
+      </label>
+      <label>Monthly spending <span id="spend-val"></span>
+        <input type="range" id="spend" min="500" max="15000" step="250" value="4000" />
+      </label>
+      <label>Taxable share of spending <span id="fraction-val"></span>
+        <input type="range" id="fraction" min="0" max="100" step="5" value="65" />
+        <small>Share of spending subject to sales tax (rent, some groceries and services are exempt).</small>
+      </label>
+      <label>House price <span id="house-val"></span>
+        <input type="range" id="house" min="0" max="2000000" step="25000" value="400000" />
+      </label>
+      <label>Filing status
+        <select id="status">
+          <option value="single">Single</option>
+          <option value="married_jointly">Married filing jointly</option>
+          <option value="head_of_household">Head of household</option>
+        </select>
+      </label>
+      <label>Income type
+        <select id="income-type">
+          <option value="wage">Wages / salary</option>
+          <option value="nonwage">Retirement / investment</option>
+        </select>
+        <small>Wages incur Social Security + Medicare payroll tax; retirement/investment income does not. State retirement-income exemptions are not modeled.</small>
+      </label>
+      <label>Color by
+        <select id="metric">
+          <option value="total">Total annual tax ($)</option>
+          <option value="effective">Total tax &divide; income (%)</option>
+        </select>
+        <small>The "&divide; income" view includes property &amp; sales tax (driven by the house-price and spending sliders), so it is not a pure income-tax rate.</small>
+      </label>
+      <div id="legend">
+        <div id="legend-label"></div>
+        <div id="legend-bar"></div>
+        <div class="legend-ends"><span id="legend-lo"></span><span id="legend-hi"></span></div>
+      </div>
+    </aside>
+
+    <section id="map-wrap">
+      <svg id="map" viewBox="0 0 960 600" preserveAspectRatio="xMidYMid meet"></svg>
+      <p id="summary"></p>
+    </section>
+  </main>
+
+  <footer>
+    <details>
+      <summary>Assumptions &amp; data sources</summary>
+      <ul>
+        <li><b>Displayed at county resolution.</b> Sales &amp; local-income taxes (ZIP-level underneath) are population-weighted to a county rate; property tax is county-level; state income tax is state-level. Within-county variation is averaged out.</li>
+        <li><b>Income type.</b> "Wages" incurs Social Security + Medicare payroll tax; "Retirement / investment" does not (but income tax still applies, and retirement-income exclusions and preferential capital-gains rates are not modeled). Married-jointly uses a single Social Security wage base, so a two-earner couple's payroll tax is slightly understated. No itemized deductions, tax credits (e.g. EITC — overstates very low incomes), or exemption phase-outs; NY's tax-benefit recapture (understates high NY earners) and federal-tax deductibility in AL/LA/MO (overstates those) are also not modeled.</li>
+        <li><b>Local income tax</b> is modeled in MD, IN, OH, PA, KY, MI, NY, IA, plus Kansas City/St. Louis, Wilmington, and major Alabama cities. Not modeled: Oregon's Portland-metro/Multnomah taxes (they apply only above ~$125k) and minor municipal occupational taxes. Approximations: NYC is a flat 3.5% (actually graduated); Iowa surtaxes use a county average; OH/PA/KY use each ZIP's dominant municipality (small enclaves inherit the larger city's rate); the county value is a population-weighted blend, so a partly-taxed county shows a partial rate.</li>
+        <li><b>Sales tax</b> applies to the taxable share of spending you set (default 65%); rent and many services/groceries are exempt in reality. Combined rates use the lowest rate within each 5-digit ZIP where a ZIP spans jurisdictions.</li>
+        <li><b>Property tax</b> = county median effective rate × the house price you enter (ignores assessment caps/homestead exemptions, e.g. California Prop 13). Connecticut's rates are its 2023 planning-region values mapped onto the legacy counties. A few counties with suppressed Census data show as no-data (gray).</li>
+        <li><b>Color scale</b> spans the true minimum-to-maximum total tax for your current inputs, and re-scales whenever you change an input — so shading is relative to the current scenario, not an absolute dollar scale, and two scenarios aren't directly color-comparable.</li>
+        <li>Sources: Census ACS 5-yr 2023 (property), Streamlined Sales Tax + state DORs (sales), state DORs (income), municipal/county registers (local income). Rates reflect 2025 law; a few source files are effective into 2026 (e.g. some sales-tax tables). Not tax advice — a directional estimate.</li>
+      </ul>
+    </details>
+  </footer>
+
+  <div id="tooltip"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
