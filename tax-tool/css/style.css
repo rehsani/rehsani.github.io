@@ -27,9 +27,19 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .site-bar .site-name { color: #fff; font-weight: 700; font-size: 1.35rem; text-decoration: none; }
-.site-nav { display: flex; gap: 1.5rem; }
+.site-nav { display: flex; align-items: center; gap: 1.5rem; }
 .site-nav a { color: #fff; text-decoration: none; font-size: 0.95rem; }
 .site-nav a:hover { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-menu {
+  list-style: none; margin: 0; padding: 0.4rem 0; position: absolute; top: 100%; left: 0;
+  min-width: 190px; background: rgba(0, 0, 0, 0.95); border: 1px solid var(--border);
+  border-radius: 8px; opacity: 0; visibility: hidden; transition: opacity 0.15s, visibility 0.15s; z-index: 20;
+}
+.nav-dropdown:hover .nav-dropdown-menu { opacity: 1; visibility: visible; }
+.nav-dropdown-menu li { margin: 0; }
+.nav-dropdown-menu a { display: block; padding: 0.4rem 0.9rem; white-space: nowrap; }
+.nav-dropdown-menu a:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
 
 /* --- Tool header --- */
 .tool-header { padding: 1.75rem 1.75rem 0.5rem; max-width: 1400px; }
