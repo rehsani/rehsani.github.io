@@ -17,7 +17,8 @@ export class TaxMap {
     this.svg = d3.select(svgSelector);
     this.tooltip = d3.select(tooltipSelector);
     this.path = d3.geoPath(d3.geoAlbersUsa());
-    this.color = d3.scaleSequential(COLOR_INTERPOLATOR);
+    // 100 discrete color bins sampled from the ramp (not a continuous scale).
+    this.color = d3.scaleQuantize().range(d3.quantize(COLOR_INTERPOLATOR, 100));
     this.features = [];
     this.results = {}; // geoid -> breakdown
   }
