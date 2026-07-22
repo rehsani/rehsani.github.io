@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-07-14 09:42:20
+
+- Added an "AlphaCAMELS" entry to the Tools dropdown linking to https://github.com/rehsani/alphacamels (opens in new tab) across all 6 pages: index.html, blog.html, blog-401k.html, blog-timing.html, blog-alphacamels.html, blog-urmia.html. Sits alongside the existing "Lake Area from Space" tool; placeholder tools (Rent Index, Wealth Estimator) kept per request. Merged origin/main (Urmia post + Lake Area tool) into the branch, resolving the Tools-dropdown conflict to keep both tools.
+
 ## 2026-07-10 14:52:10
 
 Added trend numbers to blog-urmia.html (new paragraph after the 42-year figure): July Landsat peak 1995 = 7,705 km² → 2025 = 3,292 (−57%); Sen-slope decline 1995–2015 ≈ −190 km²/yr ("half a square kilometer every day for twenty years"); July means 1994–99 = 6,672 vs 2020–25 = 3,876 (−42%). Numbers computed from urmia_july_landsat_1984_2025.csv, ok-status non-low-n rows only. Proofread pass: fixed "Landsat's labels" → "Landsat labels", made decade-comparison years explicit (1994–1999 / 2020–2025).
