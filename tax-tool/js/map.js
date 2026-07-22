@@ -12,13 +12,17 @@ const _jet = d3.scaleLinear()
   .interpolate(d3.interpolateRgb);
 const COLOR_INTERPOLATOR = (t) => _jet(Math.max(0, Math.min(1, t)));
 
+// Number of discrete color bins, shared by the map scale and the legend so they
+// always match. Change this one value to adjust the binning.
+const COLOR_BINS = 25;
+
 export class TaxMap {
   constructor(svgSelector, tooltipSelector) {
     this.svg = d3.select(svgSelector);
     this.tooltip = d3.select(tooltipSelector);
     this.path = d3.geoPath(d3.geoAlbersUsa());
-    // 50 discrete color bins sampled from the ramp (not a continuous scale).
-    this.color = d3.scaleQuantize().range(d3.quantize(COLOR_INTERPOLATOR, 50));
+    // Discrete color bins sampled from the ramp (not a continuous scale).
+    this.color = d3.scaleQuantize().range(d3.quantize(COLOR_INTERPOLATOR, COLOR_BINS));
     this.features = [];
     this.results = {}; // geoid -> breakdown
   }
@@ -78,4 +82,4 @@ export class TaxMap {
   }
 }
 
-export { fmtUSD, COLOR_INTERPOLATOR };
+export { fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS };

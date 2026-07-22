@@ -1,5 +1,5 @@
 // App entry: load data, wire controls, recompute all counties on input, recolor.
-import { TaxMap, fmtUSD, COLOR_INTERPOLATOR } from "./map.js";
+import { TaxMap, fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS } from "./map.js";
 import { countyBreakdown } from "./engines/total.js";
 import { federalTotal } from "./engines/federal.js";
 
@@ -57,8 +57,12 @@ function recompute() {
 }
 
 function buildLegend(lo, hi) {
-  const stops = d3.range(0, 1.01, 0.1)
-    .map((t) => COLOR_INTERPOLATOR(t)).join(",");
+  // Stepped gradient of COLOR_BINS hard blocks, matching the map's binned scale.
+  const colors = d3.quantize(COLOR_INTERPOLATOR, COLOR_BINS);
+  const w = 100 / COLOR_BINS;
+  const stops = colors
+    .map((c, i) => `${c} ${(i * w).toFixed(3)}% ${((i + 1) * w).toFixed(3)}%`)
+    .join(", ");
   els.legendBar.style.background = `linear-gradient(to right, ${stops})`;
   const isEff = els.metric.value === "effective";
   els.legendLo.textContent = isEff ? (lo * 100).toFixed(1) + "%" : fmtUSD(lo);
