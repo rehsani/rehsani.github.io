@@ -37,7 +37,8 @@ export class TaxMap {
     this.path.projection().fitSize([vbWidth, vbHeight], counties);
     this.features = counties.features;
 
-    this.svg.append("g").selectAll("path")
+    // Cache the county path selection so update() reuses it (no per-event requery).
+    this.countyPaths = this.svg.append("g").selectAll("path")
       .data(counties.features)
       .join("path")
       .attr("d", this.path)
@@ -60,21 +61,16 @@ export class TaxMap {
       .attr("d", this.path);
   }
 
-  // Recolor from a {geoid: breakdown} map, scaling by `metric` (a getter).
-  update(results, metric) {
+  // Recolor from a {geoid: breakdown} map, scaling by `metric` (a getter) over
+  // the precomputed [lo, hi] domain (computed once in the caller, shared with
+  // the legend/summary so they always agree).
+  update(results, metric, lo, hi) {
     this.results = results;
-    // Color domain = true min/max of the current scenario's counties, recomputed
-    // every update so the full palette always spans this scenario's range.
-    const vals = Object.values(results).map(metric).filter((v) => v > 0).sort(d3.ascending);
-    const lo = vals[0] ?? 0;
-    const hi = vals[vals.length - 1] ?? 1;
     this.color.domain([lo, hi]);
-    this.svg.selectAll("path.county")
-      .attr("fill", (d) => {
-        const b = results[d.id];
-        return b ? this.color(metric(b)) : "#e0e0e0";
-      });
-    return [lo, hi];
+    this.countyPaths.attr("fill", (d) => {
+      const b = results[d.id];
+      return b ? this.color(metric(b)) : "#e0e0e0";
+    });
   }
 
   legendDomain() {

@@ -45,39 +45,55 @@ function recompute() {
   els.fractionVal.textContent = Math.round(inp.taxableFraction * 100) + "%";
 
   const federal = federalTotal(inp.gross, inp.status, els.incomeType.value);
-  const results = {};
-  for (const [geoid, county] of Object.entries(state.counties)) {
-    const b = countyBreakdown(inp, county, state.stateRecords, federal);
-    if (b) results[geoid] = b; // null = no property data -> left as no-data on map
-  }
   const metric = metricGetter();
-  const [lo, hi] = state.map.update(results, metric);
-  buildLegend(lo, hi);
-  buildSummary(results, federal, inp);
+  // Single pass: build results, the color-domain extent (linear min/max, no
+  // sort), and the totals list for the summary.
+  const results = {};
+  const totals = [];
+  let lo = Infinity;
+  let hi = -Infinity;
+  for (const [geoid, county] of state.countyList) {
+    const b = countyBreakdown(inp, county, state.stateRecords, federal);
+    if (!b) continue; // no property data -> left as no-data on the map
+    results[geoid] = b;
+    totals.push(b.total);
+    const m = metric(b);
+    if (m > 0) {
+      if (m < lo) lo = m;
+      if (m > hi) hi = m;
+    }
+  }
+  if (!isFinite(lo)) { lo = 0; hi = 1; }
+
+  state.map.update(results, metric, lo, hi);
+  updateLegendLabels(lo, hi);
+  buildSummary(totals, federal);
 }
 
-function buildLegend(lo, hi) {
-  // Stepped gradient of COLOR_BINS hard blocks, matching the map's binned scale.
+// The stepped color gradient is constant — build it once at boot.
+function buildLegendGradient() {
   const colors = d3.quantize(COLOR_INTERPOLATOR, COLOR_BINS);
   const w = 100 / COLOR_BINS;
   const stops = colors
     .map((c, i) => `${c} ${(i * w).toFixed(3)}% ${((i + 1) * w).toFixed(3)}%`)
     .join(", ");
   els.legendBar.style.background = `linear-gradient(to right, ${stops})`;
+}
+
+function updateLegendLabels(lo, hi) {
   const isEff = els.metric.value === "effective";
   els.legendLo.textContent = isEff ? (lo * 100).toFixed(1) + "%" : fmtUSD(lo);
   els.legendHi.textContent = isEff ? (hi * 100).toFixed(1) + "%" : fmtUSD(hi);
-  els.legendLabel.textContent = isEff
-    ? "Total tax ÷ income" : "Total annual tax";
+  els.legendLabel.textContent = isEff ? "Total tax ÷ income" : "Total annual tax";
 }
 
-function buildSummary(results, federal, inp) {
-  const vals = Object.values(results).map((b) => b.total).sort(d3.ascending);
-  const median = d3.quantileSorted(vals, 0.5);
+function buildSummary(totals, federal) {
+  totals.sort(d3.ascending);
+  const median = d3.quantileSorted(totals, 0.5);
   els.summary.innerHTML =
     `Federal (same everywhere): <b>${fmtUSD(federal)}</b> &nbsp;·&nbsp; ` +
     `Median county total: <b>${fmtUSD(median)}</b> &nbsp;·&nbsp; ` +
-    `Range: ${fmtUSD(vals[0])} – ${fmtUSD(vals[vals.length - 1])}`;
+    `Range: ${fmtUSD(totals[0])} – ${fmtUSD(totals[totals.length - 1])}`;
 }
 
 function tooltipHTML(geoid, b) {
@@ -100,15 +116,24 @@ async function boot() {
   ]);
   state.counties = counties;
   state.stateRecords = incomeBundle.states;
+  state.countyList = Object.entries(counties); // materialize once, reused each recompute
   const cf = topojson.feature(topo, topo.objects.counties).features;
   cf.forEach((f) => { state.nameById[f.id] = f.properties.name; });
 
   state.map = new TaxMap("#map", "#tooltip");
   state.map.init(topo, tooltipHTML);
+  buildLegendGradient();
 
+  // Coalesce rapid slider input into at most one recompute per animation frame.
+  let scheduled = false;
+  const onInput = () => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => { scheduled = false; recompute(); });
+  };
   for (const el of [els.income, els.spend, els.house, els.fraction, els.status,
                     els.incomeType, els.metric]) {
-    el.addEventListener("input", recompute);
+    el.addEventListener("input", onInput);
   }
   recompute();
 }
