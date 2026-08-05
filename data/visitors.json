@@ -1,7 +1,11 @@
 {
-  "updated": null,
-  "total": 0,
-  "countries": {},
-  "names": {},
+  "updated": "2026-08-05T23:37:32Z",
+  "total": 11,
+  "countries": {
+    "840": 11
+  },
+  "names": {
+    "840": "United States"
+  },
   "unmatched": {}
 }
