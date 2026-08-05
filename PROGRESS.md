@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-08-05 16:41:05
+
+- First manual workflow run succeeded (run 31056928578) but wrote "1488 visitors across 16 countries" - it preserved the seeded SAMPLE data instead of replacing it. Cause: merge_with_existing() in scripts/visitor_stats.py takes a per-country high-water mark (max of stored vs fetched), which is correct for surviving GoatCounter retention limits but means any seeded baseline is permanent. My earlier claim that real data would overwrite the sample was wrong.
+- Fix: reset data/visitors.json to the empty state so real counts accumulate from zero. The merge logic is unchanged - it is right for production, the mistake was seeding fake data into a file with high-water-mark semantics.
+- Lesson for future preview data: never seed sample values into a file whose merge is monotonic; preview from a separate file or a temporary branch instead.
+
 ## 2026-08-05 16:08:30
 
 - Wired the visitor map to a live GoatCounter account (rehsani.goatcounter.com). Added the cookieless tracking script to all 8 pages, after each page's nav.js tag.
