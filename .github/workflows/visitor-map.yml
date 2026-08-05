@@ -9,7 +9,7 @@ name: Update visitor map
 
 on:
   schedule:
-    - cron: "17 4 * * *"   # daily, 04:17 UTC (off the hour: GitHub throttles :00)
+    - cron: "17 * * * *"   # hourly at :17 (off the hour: GitHub throttles :00)
   workflow_dispatch:
 
 permissions:
