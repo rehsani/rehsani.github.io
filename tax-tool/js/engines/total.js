@@ -1,5 +1,4 @@
 // Combine all engines into a per-county total-tax breakdown.
-import { federalTotal } from "./federal.js";
 import { stateIncomeTax } from "./stateIncome.js";
 import { localIncomeTax, salesTax, propertyTax } from "./localSalesProperty.js";
 

@@ -6,24 +6,29 @@
   <title>What Taxes Do You Actually Pay? — Reza Ehsani</title>
   <meta name="description" content="Federal income tax, FICA, Medicare, state and local income tax, sales tax, property tax: what they are and how your total depends on your income, spending, and home. Plus an interactive US map to estimate your own.">
   <link rel="canonical" href="https://rehsani.github.io/blog-tax-map.html">
+
+  <!-- Open Graph for rich previews -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="What Taxes Do You Actually Pay? — Reza Ehsani">
+  <meta property="og:description" content="Federal income tax, FICA, Medicare, state and local income tax, sales tax, property tax: what they are and how your total depends on your income, spending, and home. Plus an interactive US map to estimate your own.">
+  <meta property="og:url" content="https://rehsani.github.io/blog-tax-map.html">
+  <meta property="og:image" content="https://rehsani.github.io/images/tax-map-tool.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="What Taxes Do You Actually Pay? — Reza Ehsani">
+  <meta name="twitter:description" content="Federal income tax, FICA, Medicare, state and local income tax, sales tax, property tax: what they are and how your total depends on your income, spending, and home. Plus an interactive US map to estimate your own.">
+  <meta name="twitter:image" content="https://rehsani.github.io/images/tax-map-tool.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/nav.js" defer></script>
   <style>
-    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
-    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
-    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
-    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
-    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
-    .blog-article figure { margin: 1.5rem 0; }
+    /* Post-specific extras only; the shared .blog-article core lives in css/style.css.
+       The img rule below re-declares the shared one to add a hairline border. */
     .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; border: 1px solid rgba(255,255,255,0.12); }
-    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
-    .blog-article a { color: #7eb8da; text-decoration: none; }
-    .blog-article a:hover { text-decoration: underline; }
-    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
-    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
     .blog-article .disclaimer-box { background: rgba(240, 190, 90, 0.1); border-left: 4px solid #e0be5a; padding: 0.85rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: rgba(255,255,255,0.9); font-size: 0.92rem; }
     .blog-article .launch { display: inline-block; margin: 0.5rem 0 0.5rem; background: #7eb8da; color: #10202b; font-weight: 700; padding: 0.7rem 1.3rem; border-radius: 8px; text-decoration: none; }
     .blog-article .launch:hover { background: #9ccbe6; text-decoration: none; }
@@ -37,10 +42,11 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#about">About</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Tools</a>
+          <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">Tools</button>
           <ul class="dropdown-menu">
             <li><a href="tax-tool/index.html">US Tax Map</a></li>
             <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
+            <li><a href="https://github.com/rehsani/alphacamels" target="_blank">AlphaCAMELS</a></li>
           </ul>
         </li>
         <li><a href="blog.html">Blog</a></li>
@@ -154,7 +160,10 @@
 
     <figure>
       <a href="tax-tool/index.html">
-        <img src="images/tax-map-tool.png" alt="Interactive US tax map showing total annual tax by county">
+        <picture>
+          <source type="image/webp" srcset="images/tax-map-tool.webp">
+          <img src="images/tax-map-tool.png" alt="Interactive US tax map showing total annual tax by county" width="1400" height="1000">
+        </picture>
       </a>
       <figcaption>The interactive tool. Click the map, or the button below, to try it with your own numbers.</figcaption>
     </figure>

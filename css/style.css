@@ -2,13 +2,33 @@ html {
   scroll-behavior: smooth;
 }
 
+/* padding-top clears the fixed .top-bar, so it has to be part of body's own
+   height rather than added on top of min-height -- hence border-box. Without it
+   body's box is 4.5rem + max(100vh, content) and every page scrolls by exactly
+   the padding even when the content fits. The bar grows when the nav wraps, so
+   the padding is re-declared to match at each breakpoint below. */
 body {
+  box-sizing: border-box;
   margin: 0;
-  padding-top: 4.5rem;
-  min-width: 800px;
+  padding-top: 4.5rem; /* bar is 71px above 800px */
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
   background: #0d0d0d;
+}
+
+/* Hide from sight but keep it in the accessibility tree and readable by screen
+   readers (display:none / visibility:hidden would remove it from both). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 .top-bar {
@@ -60,6 +80,24 @@ body {
 .top-bar .nav-links .dropdown {
   position: relative;
 }
+/* The toggle is a <button> for keyboard and touch operability; strip the UA
+   button chrome so it renders identically to the sibling nav links. */
+.top-bar .nav-links .dropdown-toggle {
+  font: inherit;
+  line-height: inherit;
+  color: #fff;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  vertical-align: baseline;
+  text-decoration: none;
+}
+.top-bar .nav-links .dropdown-toggle:hover {
+  text-decoration: underline;
+}
 .top-bar .nav-links .dropdown-menu {
   list-style: none;
   margin: 0;
@@ -74,7 +112,17 @@ body {
   visibility: hidden;
   transition: opacity 0.2s, visibility 0.2s;
 }
-.top-bar .nav-links .dropdown:hover .dropdown-menu {
+/* Hover for mouse; .open is set by js/nav.js for click, touch and keyboard. */
+.top-bar .nav-links .dropdown:hover .dropdown-menu,
+.top-bar .nav-links .dropdown.open .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+}
+/* No-script fallback: focus alone reveals the menu. Once js/nav.js has marked
+   the document (html.js-nav), .open drives it instead, so that pressing the
+   already-focused toggle can close the menu again. */
+html:not(.js-nav) .top-bar .nav-links .dropdown:focus-within .dropdown-menu,
+html:not(.js-nav) .top-bar .nav-links .dropdown-toggle:focus-visible + .dropdown-menu {
   opacity: 1;
   visibility: visible;
 }
@@ -96,7 +144,13 @@ body {
 .landing {
   position: relative;
   min-height: 100vh;
+  /* PNG first as the fallback declaration; the image-set() below overrides it
+     wherever WebP + type() are understood. */
   background-image: url('../images/cover.png');
+  background-image: image-set(
+    url('../images/cover.webp') type('image/webp'),
+    url('../images/cover.png') type('image/png')
+  );
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -120,7 +174,13 @@ body {
   width: 100%;
   min-height: 100vh;
   background-color: #fff;
+  /* PNG first as the fallback declaration; the image-set() below overrides it
+     wherever WebP + type() are understood. */
   background-image: url('../images/about-bg.png');
+  background-image: image-set(
+    url('../images/about-bg.webp') type('image/webp'),
+    url('../images/about-bg.png') type('image/png')
+  );
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -207,12 +267,6 @@ body {
 
 #contact .contact-column .contact-form {
   text-align: left;
-}
-
-#contact .visitors-column {
-  flex: 0 1 260px;
-  min-width: 220px;
-  text-align: center;
 }
 
 #contact h2 {
@@ -316,44 +370,10 @@ body {
   display: none;
 }
 
-/* Recent visitors (ClustrMaps) - small widget next to contact form */
-#contact .visitors-column h3 {
-  margin: 0 0 0.35rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-#contact .visitors-column .visitors-intro {
-  margin: 0 0 1rem;
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-#contact .visitors-widget {
-  width: 220px;
-  height: 220px;
-  margin: 0 auto;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Widget is built for 320px; render at native size and scale into the 220px box so its label doesn't clip */
-#contact .visitors-widget iframe {
-  display: block;
-  width: 320px;
-  height: 320px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: scale(0.6875);
-  transform-origin: top left;
-}
-
 @media (max-width: 800px) {
+  /* The nav stacks under the name here, taking the bar to 82px. */
   body {
-    min-width: 0;
+    padding-top: 5.75rem;
   }
 
   .top-bar {
@@ -372,7 +392,8 @@ body {
     flex-wrap: wrap;
     gap: 0.5rem 1rem;
   }
-  .top-bar .nav-links a {
+  .top-bar .nav-links a,
+  .top-bar .nav-links .dropdown-toggle {
     font-size: 0.9rem;
   }
 
@@ -397,9 +418,37 @@ body {
     flex-direction: column;
     align-items: center;
   }
+}
 
-  #contact .visitors-column {
-    width: 100%;
-    max-width: 260px;
+/* The nav-links row wraps onto a second line at 400px and narrower, taking the
+   bar to 110px. Measured with Inter loaded, which is the widest case -- the
+   system fallback is narrower and does not reach a third row at all. */
+@media (max-width: 400px) {
+  body {
+    padding-top: 7.5rem;
   }
 }
+
+/* --- Blog post article: the core shared by every post ---------------------
+   Each post's <style> block still carries only its own genuine extras (tables,
+   code blocks, character cards, disclaimer boxes, paired images). Those blocks
+   come after this stylesheet in the document, so a same-specificity override
+   there (e.g. the tax-map post's bordered images) still wins. */
+.blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
+.blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
+.blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
+.blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
+.blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
+.blog-article figure { margin: 1.5rem 0; }
+.blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
+.blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
+.blog-article a { color: #7eb8da; text-decoration: none; }
+.blog-article a:hover { text-decoration: underline; }
+.blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+.blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+
+/* Figures wrap their <img> in <picture> to offer a WebP source with a PNG
+   fallback. <picture> is inline by default; make it a block so the layout is
+   identical to the bare block-level <img> it replaced. */
+.blog-article picture { display: block; }

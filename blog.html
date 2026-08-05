@@ -6,10 +6,25 @@
   <title>Blog — Reza Ehsani</title>
   <meta name="description" content="Blog posts by Reza Ehsani on 401(k) strategy, retirement planning, market timing, and personal finance—with data and backtests.">
   <link rel="canonical" href="https://rehsani.github.io/blog.html">
+
+  <!-- Open Graph for rich previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Blog — Reza Ehsani">
+  <meta property="og:description" content="Blog posts by Reza Ehsani on 401(k) strategy, retirement planning, market timing, and personal finance—with data and backtests.">
+  <meta property="og:url" content="https://rehsani.github.io/blog.html">
+  <meta property="og:image" content="https://rehsani.github.io/images/cover.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Blog — Reza Ehsani">
+  <meta name="twitter:description" content="Blog posts by Reza Ehsani on 401(k) strategy, retirement planning, market timing, and personal finance—with data and backtests.">
+  <meta name="twitter:image" content="https://rehsani.github.io/images/cover.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/nav.js" defer></script>
   <style>
     .blog-index { max-width: 820px; margin: 0 auto; padding: 3rem 1.5rem 4rem; box-sizing: border-box; }
     .blog-index h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 2rem; }
@@ -31,7 +46,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#about">About</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Tools</a>
+          <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">Tools</button>
           <ul class="dropdown-menu">
             <li><a href="tax-tool/index.html">US Tax Map</a></li>
             <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
