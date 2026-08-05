@@ -6,24 +6,27 @@
   <title>An Open-Source Tool for Watching Lakes from Space — Reza Ehsani</title>
   <meta name="description" content="I built lake-area-gee, an open-source tool that measures any lake or reservoir from free satellite imagery. Here is what it reveals about Lake Urmia's 42-year decline.">
   <link rel="canonical" href="https://rehsani.github.io/blog-urmia.html">
+
+  <!-- Open Graph for rich previews -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="An Open-Source Tool for Watching Lakes from Space — Reza Ehsani">
+  <meta property="og:description" content="I built lake-area-gee, an open-source tool that measures any lake or reservoir from free satellite imagery. Here is what it reveals about Lake Urmia's 42-year decline.">
+  <meta property="og:url" content="https://rehsani.github.io/blog-urmia.html">
+  <meta property="og:image" content="https://rehsani.github.io/images/urmia-truecolor-2020-07.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="An Open-Source Tool for Watching Lakes from Space — Reza Ehsani">
+  <meta name="twitter:description" content="I built lake-area-gee, an open-source tool that measures any lake or reservoir from free satellite imagery. Here is what it reveals about Lake Urmia's 42-year decline.">
+  <meta name="twitter:image" content="https://rehsani.github.io/images/urmia-truecolor-2020-07.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/nav.js" defer></script>
   <style>
-    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
-    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
-    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
-    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
-    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
-    .blog-article figure { margin: 1.5rem 0; }
-    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
-    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
-    .blog-article a { color: #7eb8da; text-decoration: none; }
-    .blog-article a:hover { text-decoration: underline; }
-    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
-    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
+    /* Post-specific extras only; the shared .blog-article core lives in css/style.css. */
     .blog-article .img-pair { display: flex; gap: 1rem; flex-wrap: wrap; }
     .blog-article .img-pair figure { flex: 1 1 300px; margin: 0.5rem 0; }
   </style>
@@ -36,7 +39,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#about">About</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Tools</a>
+          <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">Tools</button>
           <ul class="dropdown-menu">
             <li><a href="tax-tool/index.html">US Tax Map</a></li>
             <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
@@ -95,18 +98,24 @@
 
     <div class="img-pair">
       <figure>
-        <img src="images/urmia-truecolor-2020-07.png" alt="Satellite photo of Lake Urmia, July 2020">
+        <picture>
+          <source type="image/webp" srcset="images/urmia-truecolor-2020-07.webp">
+          <img src="images/urmia-truecolor-2020-07.png" alt="Satellite photo of Lake Urmia, July 2020" width="682" height="768">
+        </picture>
         <figcaption>Lake Urmia as the satellite sees it — July 2020, Sentinel-2.</figcaption>
       </figure>
       <figure>
-        <img src="images/urmia-watermask-2020-07.png" alt="Computed water map for the same scene">
+        <img src="images/urmia-watermask-2020-07.png" alt="Computed water map for the same scene" width="682" height="768">
         <figcaption>The water map lake-area-gee computes from the same image: 4,686 square kilometers.</figcaption>
       </figure>
     </div>
 
     <h2>What 42 years look like</h2>
     <figure>
-      <img src="images/urmia-seasonal-s2-vs-landsat.png" alt="Surface-area history of Lake Urmia, 1984 to 2026, from Landsat and Sentinel-2">
+      <picture>
+        <source type="image/webp" srcset="images/urmia-seasonal-s2-vs-landsat.webp">
+        <img src="images/urmia-seasonal-s2-vs-landsat.png" alt="Surface-area history of Lake Urmia, 1984 to 2026, from Landsat and Sentinel-2" width="1800" height="1050">
+      </picture>
       <figcaption>Top: the full Landsat record, one point per season. Bottom: recent years measured by both
       satellite families independently — in summer they agree to within a fraction of a percent.</figcaption>
     </figure>
@@ -128,7 +137,10 @@
       one generation.
     </p>
     <figure>
-      <img src="images/urmia-monthly-s2.png" alt="Monthly surface-area measurements, 2017 to 2026">
+      <picture>
+        <source type="image/webp" srcset="images/urmia-monthly-s2.webp">
+        <img src="images/urmia-monthly-s2.png" alt="Monthly surface-area measurements, 2017 to 2026" width="1650" height="750">
+      </picture>
       <figcaption>Month-by-month measurements from Sentinel-2 (2017–2026) resolve that seasonal breathing in detail.</figcaption>
     </figure>
 

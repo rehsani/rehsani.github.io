@@ -6,29 +6,32 @@
   <title>What If You Had Maxed Your 401(k) Every Year? — Reza Ehsani</title>
   <meta name="description" content="A backtest of max 401(k) employee contributions invested in stocks and bonds—how much you’d have if you had maxed out every year.">
   <link rel="canonical" href="https://rehsani.github.io/blog-401k.html">
+
+  <!-- Open Graph for rich previews -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="What If You Had Maxed Your 401(k) Every Year? — Reza Ehsani">
+  <meta property="og:description" content="A backtest of max 401(k) employee contributions invested in stocks and bonds—how much you’d have if you had maxed out every year.">
+  <meta property="og:url" content="https://rehsani.github.io/blog-401k.html">
+  <meta property="og:image" content="https://rehsani.github.io/images/1b_portfolio_value_by_strategy.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="What If You Had Maxed Your 401(k) Every Year? — Reza Ehsani">
+  <meta name="twitter:description" content="A backtest of max 401(k) employee contributions invested in stocks and bonds—how much you’d have if you had maxed out every year.">
+  <meta name="twitter:image" content="https://rehsani.github.io/images/1b_portfolio_value_by_strategy.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/nav.js" defer></script>
   <style>
-    .blog-article { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; box-sizing: border-box; }
-    .blog-article h1 { font-size: 1.75rem; font-weight: 700; color: #fff; margin: 0 0 0.5rem; line-height: 1.3; }
-    .blog-article .meta { color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .blog-article p { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; }
-    .blog-article h2 { font-size: 1.2rem; font-weight: 600; color: #fff; margin: 2rem 0 0.75rem; }
-    .blog-article ul { color: rgba(255,255,255,0.92); line-height: 1.7; margin: 0 0 1rem; padding-left: 1.5rem; }
-    .blog-article figure { margin: 1.5rem 0; }
-    .blog-article img { max-width: 100%; height: auto; display: block; border-radius: 6px; }
-    .blog-article figcaption { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.5rem; text-align: center; }
-    .blog-article a { color: #7eb8da; text-decoration: none; }
-    .blog-article a:hover { text-decoration: underline; }
-    .blog-article .back { display: inline-block; margin-bottom: 1.5rem; }
+    /* Post-specific extras only; the shared .blog-article core lives in css/style.css. */
     .blog-article table { width: 100%; max-width: 600px; margin: 1.5rem auto; border-collapse: collapse; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
     .blog-article th, .blog-article td { padding: 0.75rem 1rem; text-align: left; border: 1px solid rgba(255,255,255,0.1); }
     .blog-article th { color: #fff; font-weight: 600; background: rgba(255,255,255,0.12); }
     .blog-article td { color: rgba(255,255,255,0.92); background: rgba(255,255,255,0.03); }
     .blog-article tr:hover td { background: rgba(255,255,255,0.07); }
-    .blog-article .highlight-box { background: rgba(126, 184, 218, 0.1); border-left: 4px solid #7eb8da; padding: 1rem 1.25rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0; color: #fff; }
   </style>
 </head>
 <body>
@@ -38,9 +41,8 @@
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#about">About</a></li>
-        <li><a href="#">CV</a></li>
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle">Tools</a>
+          <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">Tools</button>
           <ul class="dropdown-menu">
             <li><a href="tax-tool/index.html">US Tax Map</a></li>
             <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
@@ -84,7 +86,10 @@
       The amount you can contribute to a 401(k) each year from your paycheck—the employee elective deferral limit—is set by the IRS and applies per person, per year. The limit is adjusted periodically for inflation, so it has crept up over time: from about $7,600 in 1989 to $23,500 in 2025. That’s more than a tripling in nominal terms over the period. The chart below shows the limit for every year so you can see how the “max” we use in the backtest has changed.
     </p>
     <figure>
-      <img src="images/1a_contribution_limits.png" alt="Bar chart of 401(k) annual contribution limit by year from 1989 to 2025." width="720" height="480">
+      <picture>
+        <source type="image/webp" srcset="images/1a_contribution_limits.webp">
+        <img src="images/1a_contribution_limits.png" alt="Bar chart of 401(k) annual contribution limit by year from 1989 to 2025." width="1800" height="1200">
+      </picture>
       <figcaption>401(k) employee elective deferral limit (USD) by year.</figcaption>
     </figure>
 
@@ -93,7 +98,10 @@
       Below is the growth of a 401(k) that maxed contributions every year starting in 2004. Each solid line is a different strategy: 100% S&P 500, 100% NASDAQ, 100% Dow Jones, 100% bonds (AGG), or an 80% stocks / 20% bonds mix. The dashed line is <strong>Cumulative Contributions</strong>—the total cash you put in, with no investment return. Anything above that line is the effect of market growth. Comparing the lines shows how much the choice of investment (and the period 2004–2025) changed the outcome.
     </p>
     <figure>
-      <img src="images/1b_portfolio_value_by_strategy.png" alt="Line chart of portfolio value over time for S&P 500, NASDAQ, Dow, AGG, and 80/20 mix, plus cumulative contributions." width="720" height="480">
+      <picture>
+        <source type="image/webp" srcset="images/1b_portfolio_value_by_strategy.webp">
+        <img src="images/1b_portfolio_value_by_strategy.png" alt="Line chart of portfolio value over time for S&P 500, NASDAQ, Dow, AGG, and 80/20 mix, plus cumulative contributions." width="1800" height="1200">
+      </picture>
       <figcaption>Portfolio value (USD) by strategy; biweekly max contributions, value as of each date.</figcaption>
     </figure>
 
@@ -125,7 +133,10 @@
       The takeaway: <strong>if you stay invested long enough, even bad timing still pays off.</strong> The unluckiest cohort—those whose 25-year window ended right in the 2008–2009 financial crisis—still achieved a growth multiple of about 2×. That means they doubled their contributions despite finishing at a market bottom. Time in the market, not timing the market, is what shows up in the data (I will post a follow-up on this soon).
     </p>
     <figure>
-      <img src="images/1c_growth_multiple_by_start_year.png" alt="Bar chart of growth multiple by start year for S&P 500 401(k), value as of 2025." width="720" height="480">
+      <picture>
+        <source type="image/webp" srcset="images/1c_growth_multiple_by_start_year.webp">
+        <img src="images/1c_growth_multiple_by_start_year.png" alt="Bar chart of growth multiple by start year for S&P 500 401(k), value as of 2025." width="1800" height="1200">
+      </picture>
       <figcaption>S&P 500 401(k): growth multiple by start year (averaging over 25-year contribution periods).</figcaption>
     </figure>
 

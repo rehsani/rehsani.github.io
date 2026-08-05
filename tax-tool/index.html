@@ -4,29 +4,52 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>US Tax Map — total tax by county</title>
+  <meta name="description" content="Set your income, spending, home value and filing status, and see the total annual tax you would pay in every US county, live. It combines federal (income, Social Security, Medicare), state and local income, sales, and property tax." />
+  <link rel="canonical" href="https://rehsani.github.io/tax-tool/index.html" />
+
+  <!-- Open Graph for rich previews -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="US Tax Map — total tax by county" />
+  <meta property="og:description" content="Set your income, spending, home value and filing status, and see the total annual tax you would pay in every US county, live. It combines federal (income, Social Security, Medicare), state and local income, sales, and property tax." />
+  <meta property="og:url" content="https://rehsani.github.io/tax-tool/index.html" />
+  <meta property="og:image" content="https://rehsani.github.io/images/cover.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="US Tax Map — total tax by county" />
+  <meta name="twitter:description" content="Set your income, spending, home value and filing status, and see the total annual tax you would pay in every US county, live. It combines federal (income, Social Security, Medicare), state and local income, sales, and property tax." />
+  <meta name="twitter:image" content="https://rehsani.github.io/images/cover.png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Site-wide styles first (shared top bar / Tools dropdown), then the tool's own. -->
+  <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="css/style.css" />
+  <script src="../js/nav.js" defer></script>
   <script src="js/vendor/d3.v7.min.js"></script>
   <script src="js/vendor/topojson-client.v3.min.js"></script>
 </head>
 <body>
-  <header class="site-bar">
-    <a href="../index.html" class="site-name">Reza Ehsani</a>
-    <nav class="site-nav">
-      <a href="../index.html">Home</a>
-      <a href="../index.html#about">About</a>
-      <div class="nav-dropdown">
-        <a href="#" class="nav-dropdown-toggle">Tools</a>
-        <ul class="nav-dropdown-menu">
-          <li><a href="index.html">US Tax Map</a></li>
-          <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
-          <li><a href="https://github.com/rehsani/alphacamels" target="_blank">AlphaCAMELS</a></li>
-        </ul>
-      </div>
-      <a href="../blog-tax-map.html">Write-up</a>
-      <a href="../blog.html">Blog</a>
+  <header class="top-bar">
+    <nav>
+      <a href="../index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../index.html#about">About</a></li>
+        <li class="dropdown">
+          <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">Tools</button>
+          <ul class="dropdown-menu">
+            <li><a href="index.html">US Tax Map</a></li>
+            <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
+            <li><a href="https://github.com/rehsani/alphacamels" target="_blank">AlphaCAMELS</a></li>
+          </ul>
+        </li>
+        <li><a href="../blog-tax-map.html">Write-up</a></li>
+        <li><a href="../blog.html">Blog</a></li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="../index.html#contact">Contact</a></li>
+      </ul>
     </nav>
   </header>
 
