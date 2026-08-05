@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-08-05 16:08:30
+
+- Wired the visitor map to a live GoatCounter account (rehsani.goatcounter.com). Added the cookieless tracking script to all 8 pages, after each page's nav.js tag.
+- Set GOATCOUNTER_SITE and GOATCOUNTER_TOKEN as repo secrets via `gh secret set` (piped over stdin, so the token never entered argv or shell history). Token is not in any repo file - verified by grep.
+- Changed the workflow cron from daily to hourly ("17 * * * *"); it still commits only when data changes, so quiet hours produce no commit and no Pages rebuild.
+- Verified the pipeline end to end against the live API: /api/v0/me and /api/v0/stats/locations both 200, response shape is {stats: [], more: false} exactly as coded, and scripts/visitor_stats.py ran clean to a scratch path (0 visitors, nothing tracked yet).
+- Note: the first call to /stats/locations returned 404 and succeeded minutes later - transient, the account had just been created. Worth remembering if it recurs.
+- Outstanding: data/visitors.json still holds SAMPLE numbers (1,489 visits / 17 countries) pending confirmation the map renders on the deployed site; revert to the empty state once real data lands.
+
 ## 2026-08-05 15:38:12
 
 - Built a self-hosted visitor map to replace the dead ClustrMaps/MapMyVisitors widget (that service and RevolverMaps have both shut down; the whole free hosted-widget category is gone, so this owns the pipeline instead).
