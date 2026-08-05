@@ -1,5 +1,6 @@
-// County choropleth built on d3 + topojson (vendored under js/vendor/ and
-// loaded as window globals by index.html, not as ES module imports).
+// County choropleth built on d3 + topojson (vendored under the site-root
+// /js/vendor/, shared with the visitor map, and loaded as window globals by
+// index.html, not as ES module imports).
 // Uses geoAlbersUsa so Alaska and Hawaii appear as insets.
 
 const fmtUSD = (n) => "$" + Math.round(n).toLocaleString("en-US");
