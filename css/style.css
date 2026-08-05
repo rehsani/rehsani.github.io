@@ -269,6 +269,42 @@ html:not(.js-nav) .top-bar .nav-links .dropdown-toggle:focus-visible + .dropdown
   text-align: left;
 }
 
+/* Visitor map - world choropleth beside the contact form, drawn by
+   js/visitor-map.js from data/visitors.json (see the visitor-map workflow). */
+#contact .visitors-column {
+  flex: 0 1 320px;
+  min-width: 240px;
+}
+
+#contact .visitors-column h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+#contact .visitors-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #141a1f;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+}
+
+#contact .visitors-caption {
+  margin: 0.6rem 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+}
+
+#contact .visitors-status {
+  margin: 0.3rem 0 0;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 #contact h2 {
   margin: 0 0 0.5rem;
   font-size: 1.25rem;

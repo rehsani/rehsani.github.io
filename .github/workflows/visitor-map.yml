@@ -1,0 +1,56 @@
+name: Update visitor map
+
+# Refreshes data/visitors.json from GoatCounter so the homepage map has data to
+# draw. Runs on a schedule and can be triggered by hand from the Actions tab.
+#
+# Requires two repository secrets (Settings -> Secrets and variables -> Actions):
+#   GOATCOUNTER_SITE   the SITE in https://SITE.goatcounter.com
+#   GOATCOUNTER_TOKEN  an API token with "Read statistics" permission
+
+on:
+  schedule:
+    - cron: "17 4 * * *"   # daily, 04:17 UTC (off the hour: GitHub throttles :00)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visitor-map
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch visitor stats
+        env:
+          GOATCOUNTER_SITE: ${{ secrets.GOATCOUNTER_SITE }}
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+        run: |
+          if [ -z "$GOATCOUNTER_SITE" ] || [ -z "$GOATCOUNTER_TOKEN" ]; then
+            echo "::error::GOATCOUNTER_SITE and GOATCOUNTER_TOKEN secrets are not set."
+            exit 1
+          fi
+          python scripts/visitor_stats.py \
+            --site "$GOATCOUNTER_SITE" \
+            --token "$GOATCOUNTER_TOKEN" \
+            --out data/visitors.json
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- data/visitors.json; then
+            echo "No change in visitor data; nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/visitors.json
+          git commit -m "Update visitor map data"
+          git push

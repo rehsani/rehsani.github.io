@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-08-05 15:38:12
+
+- Built a self-hosted visitor map to replace the dead ClustrMaps/MapMyVisitors widget (that service and RevolverMaps have both shut down; the whole free hosted-widget category is gone, so this owns the pipeline instead).
+- Created scripts/visitor_stats.py — fetches GoatCounter /api/v0/stats/locations, folds region rows ("US-CA") into their country, converts ISO alpha-2 to the ISO numeric codes the world-atlas TopoJSON uses, and merges per-country high-water marks into the committed JSON so history survives provider retention limits. Hand-written 184-entry code table validated against the authoritative ISO 3166 list: 0 wrong codes, reaches all 174 map features.
+- Created .github/workflows/visitor-map.yml — daily cron (04:17 UTC) + manual dispatch, commits data/visitors.json only when changed. Needs GOATCOUNTER_SITE and GOATCOUNTER_TOKEN repo secrets.
+- Created js/visitor-map.js — Natural Earth choropleth, sqrt colour scale (counts are heavily skewed), per-country tooltips. Lazy-loaded via IntersectionObserver so the landing page pays nothing until Contact scrolls into view.
+- Added data/world-countries-110m.json (105 KB). Chose 110m over 50m (739 KB) to protect the 199 KB landing page; the six countries it omits (Singapore, Hong Kong, Malta, Bahrain, Macao, Mauritius) are listed as text under the map rather than silently dropped.
+- Moved js/vendor/{d3,topojson-client} from tax-tool to the site root so both maps share one copy; updated tax-tool/index.html script paths and the map.js comment. Verified the tax tool still computes: federal $21,099 at 100k single/wage, 3,131 counties — identical to before the move.
+- Restored the .visitors-column CSS deleted earlier this session, adapted for the map; added the column to index.html's contact section.
+- Verified end to end against mock data: 177 country paths, 14 shaded, tooltips on all, caption and off-map list correct. data/visitors.json ships empty ("No visits recorded yet") until the GoatCounter account exists.
+
 ## 2026-08-05 14:51:44
 
 - Fixed the one regression the final review caught: css/style.css:395 — the `@media (max-width: 800px)` nav font-size rule selected only `.top-bar .nav-links a`, so after the Tools toggle became a `<button>` it kept its inherited 16px while sibling links dropped to 14.4px (0.9rem). Added `.top-bar .nav-links .dropdown-toggle` to the selector. Verified by screenshot at a 500px layout viewport (inside the <=800px band): "Tools" now matches Home/About/Blog/Publications.
