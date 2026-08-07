@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-08-07 00:00:00
+
+- Added a second "Open the US Tax Map" launch button near the top of blog-tax-map.html (right under the subtitle, above the disclaimer box), so readers who bounce off the wall of text still see the tool link without scrolling. Reuses the existing .launch style; the bottom button is unchanged.
+
 ## 2026-08-05 16:41:05
 
 - First manual workflow run succeeded (run 31056928578) but wrote "1488 visitors across 16 countries" - it preserved the seeded SAMPLE data instead of replacing it. Cause: merge_with_existing() in scripts/visitor_stats.py takes a per-country high-water mark (max of stored vs fetched), which is correct for surviving GoatCounter retention limits but means any seeded baseline is permanent. My earlier claim that real data would overwrite the sample was wrong.
