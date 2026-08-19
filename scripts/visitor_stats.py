@@ -6,6 +6,17 @@ the numeric codes used as feature ids by the world-atlas TopoJSON that the
 browser renders, and merges the result into a committed JSON file so history
 accumulates in the repo rather than depending on the provider's retention.
 
+The counts are cumulative since DEFAULT_START. That requires care on two points,
+both of which silently under-report if left at the API's defaults:
+
+  * `start` defaults to *one week ago* server-side, so it must always be sent
+    explicitly. Querying the default window and then max-merging (see
+    merge_with_existing) pins the file to the busiest single week ever observed
+    rather than the running total.
+  * `/api/v0/stats/locations` paginates at 20 rows by default and reports a
+    `more` flag; every page has to be drained or countries past the first page
+    are dropped from the total.
+
 The output file is the single declared artifact: data/visitors.json.
 """
 
@@ -13,9 +24,19 @@ import argparse
 import json
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+# GoatCounter's stats endpoints default `start` to one week ago. To accumulate a
+# lifetime total we ask for everything from well before the site existed; the API
+# simply returns nothing for the empty stretch.
+DEFAULT_START = "2020-01-01"
+
+# Rows per request. The endpoint's own default is 20; it is paginated with
+# `offset` and signals continuation with a `more` flag in the response.
+PAGE_SIZE = 100
 
 # GoatCounter reports locations as ISO 3166-1 alpha-2, optionally with a region
 # suffix ("US-CA"). The world-atlas TopoJSON keys features by ISO 3166-1
@@ -67,35 +88,72 @@ def parse_args():
                    help="GoatCounter API token (pass via env, never hardcode)")
     p.add_argument("--out", type=Path, default=Path("data/visitors.json"),
                    help="Output JSON path (default: data/visitors.json)")
-    p.add_argument("--start", default="",
-                   help="Start date YYYY-MM-DD; default is the full history GoatCounter retains")
+    p.add_argument("--start", default=DEFAULT_START,
+                   help="Start date YYYY-MM-DD for the cumulative window "
+                        "(default: %(default)s). Passing an empty string falls back to "
+                        "the API's own default of one week ago, which is not cumulative.")
     p.add_argument("--timeout", type=int, default=30,
                    help="HTTP timeout in seconds (default: 30)")
     return p.parse_args()
 
 
-def fetch_locations(site, token, start, timeout):
-    """Return GoatCounter's location stats as a list of {id, name, count} dicts."""
-    url = f"https://{site}.goatcounter.com/api/v0/stats/locations"
+def fetch_page(site, token, start, timeout, offset):
+    """Return one page of the locations endpoint as the decoded response dict.
+
+    Args:
+        site: GoatCounter site code (the SITE in https://SITE.goatcounter.com).
+        token: API token with "Read statistics" permission.
+        start: Start date YYYY-MM-DD, sent explicitly so the window is the whole
+            history rather than the API's default of one week ago.
+        timeout: HTTP timeout in seconds.
+        offset: Row offset for pagination; 0 for the first page.
+    """
+    params = {"limit": str(PAGE_SIZE)}
     if start:
-        url += f"?start={start}"
+        params["start"] = start
+    if offset:
+        params["offset"] = str(offset)
+    url = (f"https://{site}.goatcounter.com/api/v0/stats/locations"
+           f"?{urllib.parse.urlencode(params)}")
     req = urllib.request.Request(url, headers={
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     })
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
-            payload = json.load(resp)
+            return json.load(resp)
     except urllib.error.HTTPError as e:
         # Fail loudly: a silent empty result would quietly blank the map.
         sys.exit(f"GoatCounter API returned HTTP {e.code}: {e.read().decode(errors='replace')[:300]}")
     except urllib.error.URLError as e:
         sys.exit(f"Could not reach the GoatCounter API: {e.reason}")
 
-    stats = payload.get("stats")
-    if stats is None:
-        sys.exit(f"Unexpected API response, no 'stats' key. Got keys: {list(payload)}")
-    return stats
+
+def fetch_locations(site, token, start, timeout):
+    """Return all location stats as a list of {id, name, count} dicts.
+
+    Walks every page the endpoint offers. The response's `more` flag marks a
+    truncated result; stopping at the first page would drop countries past the
+    page size and under-report the total.
+
+    Args:
+        site: GoatCounter site code.
+        token: API token with "Read statistics" permission.
+        start: Start date YYYY-MM-DD for the cumulative window.
+        timeout: HTTP timeout in seconds.
+    """
+    rows, offset = [], 0
+    while True:
+        payload = fetch_page(site, token, start, timeout, offset)
+        stats = payload.get("stats")
+        if stats is None:
+            sys.exit(f"Unexpected API response, no 'stats' key. Got keys: {list(payload)}")
+        rows.extend(stats)
+        # Guard the `more` flag with a non-empty page: a truthy `more` alongside
+        # zero rows would otherwise spin forever.
+        if not payload.get("more") or not stats:
+            return rows
+        offset += len(stats)
 
 
 def to_country_counts(stats):
@@ -128,9 +186,19 @@ def to_country_counts(stats):
 def merge_with_existing(path, counts, names):
     """Take the per-country maximum against any previously committed totals.
 
-    GoatCounter's free tier may age data out. Because each run keeps the larger
-    of the stored and freshly fetched count, the committed file accumulates a
-    high-water mark instead of shrinking when history expires.
+    With `start` pinned to DEFAULT_START the fetched counts are already
+    cumulative, so this is purely a floor against GoatCounter aging data out:
+    it keeps the larger of the stored and freshly fetched count so the file
+    never shrinks when history expires upstream.
+
+    This only behaves as a floor because the fetched value is a running total.
+    Against a rolling window it would instead freeze the file at the busiest
+    window ever seen, which is what it did before `start` was sent explicitly.
+
+    Args:
+        path: Existing output JSON to merge against; missing is fine.
+        counts: Freshly fetched {numeric_code: count}.
+        names: Freshly fetched {numeric_code: display name}.
     """
     if not path.exists():
         return counts, names
@@ -150,6 +218,7 @@ def main():
     """Fetch, transform, merge, and write the visitor-country JSON."""
     args = parse_args()
     stats = fetch_locations(args.site, args.token, args.start, args.timeout)
+    print(f"Fetched {len(stats)} location row(s) since {args.start or 'one week ago (API default)'}")
     counts, names, unmatched = to_country_counts(stats)
     if unmatched:
         print(f"WARNING: {len(unmatched)} unrecognised location id(s): {unmatched}",

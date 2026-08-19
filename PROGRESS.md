@@ -1,5 +1,28 @@
 # Progress
 
+## 2026-08-19 18:05:00
+
+- Diagnosed the frozen visitor counter: `scripts/visitor_stats.py` sent no `start` to
+  `/api/v0/stats/locations`, so GoatCounter applied its server-side default of one week
+  ago. Combined with the per-country `max()` in `merge_with_existing()`, `data/visitors.json`
+  was a high-water mark over a rolling 7-day window, not a cumulative total. It stuck at
+  51 (US 49) from 2026-08-14 onward because no later week beat that peak.
+- Established the hourly commits were noise: `doc["updated"]` is stamped with `datetime.now()`
+  every run, so the file always differs from HEAD and the workflow's `git diff --quiet` check
+  never short-circuits. ~130 commits since 08-13 carried identical counts.
+- Edited scripts/visitor_stats.py — added `DEFAULT_START = "2020-01-01"` and made `--start`
+  default to it, so the query window is the full history and counts are cumulative.
+- Edited scripts/visitor_stats.py — split out `fetch_page()` and made `fetch_locations()`
+  drain every page via `offset`/`more` with `PAGE_SIZE = 100`. The endpoint's default
+  `limit` is 20, so countries past the first page were being dropped from the total.
+- Verified offline with a stubbed `urllib.request.urlopen`: single-page URL carries
+  `start`/`limit` and no `offset`; two-page response drains both with `offset=1` on the
+  second; `more: true` with zero rows terminates instead of looping; merge floor rises to
+  a larger fetched count and holds at the stored 49 against a smaller one. Probe deleted.
+- Not verified end to end against the live API: the token is a GitHub Actions secret, so the
+  real cumulative number only appears on the next workflow run.
+
+
 ## 2026-08-07 00:00:00
 
 - Added a second "Open the US Tax Map" launch button near the top of blog-tax-map.html (right under the subtitle, above the disclaimer box), so readers who bounce off the wall of text still see the tool link without scrolling. Reuses the existing .launch style; the bottom button is unchanged.
