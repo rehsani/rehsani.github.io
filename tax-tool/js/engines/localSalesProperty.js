@@ -2,9 +2,13 @@
 const round2 = (x) => Math.round(x * 100) / 100;
 
 // Local income tax: rate on income, or (base "state_tax") rate on state tax.
-export function localIncomeTax(gross, stateTax, localRate, localBase) {
+// taxableOffset is subtracted from gross first for jurisdictions that levy on a
+// net figure (MD, IN, MI, NYC); it is 0 for OH/PA/KY, which levy on gross, and
+// is ignored for the "state_tax" base.
+export function localIncomeTax(gross, stateTax, localRate, localBase, taxableOffset = 0) {
   if (!localRate) return 0;
-  return round2(localBase === "state_tax" ? localRate * stateTax : localRate * gross);
+  if (localBase === "state_tax") return round2(localRate * stateTax);
+  return round2(localRate * Math.max(0, gross - taxableOffset));
 }
 
 // Sales tax applies to the taxable portion of annual spending.
