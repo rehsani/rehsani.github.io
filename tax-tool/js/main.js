@@ -1,7 +1,7 @@
 // App entry: load data, wire controls, recompute all counties on input, recolor.
 import { TaxMap, fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS } from "./map.js";
 import { countyBreakdown } from "./engines/total.js";
-import { federalTotal } from "./engines/federal.js";
+import { federalTotal, federalIncomeTax } from "./engines/federal.js";
 
 const state = { counties: null, stateRecords: null, nameById: {}, map: null };
 
@@ -45,6 +45,8 @@ function recompute() {
   els.fractionVal.textContent = Math.round(inp.taxableFraction * 100) + "%";
 
   const federal = federalTotal(inp.gross, inp.status, els.incomeType.value);
+  // Alabama deducts federal income tax, so the state engine needs that part alone.
+  const federalIncome = federalIncomeTax(inp.gross, inp.status);
   const metric = metricGetter();
   // Single pass: build results, the color-domain extent (linear min/max, no
   // sort), and the totals list for the summary.
@@ -53,7 +55,7 @@ function recompute() {
   let lo = Infinity;
   let hi = -Infinity;
   for (const [geoid, county] of state.countyList) {
-    const b = countyBreakdown(inp, county, state.stateRecords, federal);
+    const b = countyBreakdown(inp, county, state.stateRecords, federal, federalIncome);
     if (!b) continue; // no property data -> left as no-data on the map
     results[geoid] = b;
     totals.push(b.total);
@@ -63,10 +65,14 @@ function recompute() {
       if (m > hi) hi = m;
     }
   }
-  if (!isFinite(lo)) { lo = 0; hi = 1; }
+  // No county has a positive metric value. That happens in "÷ income" mode at
+  // zero income, where every effective rate is 0: there is no range to show, so
+  // flag it rather than inventing a 0-100% one.
+  const degenerate = !isFinite(lo);
+  if (degenerate) { lo = 0; hi = 1; }
 
   state.map.update(results, metric, lo, hi);
-  updateLegendLabels(lo, hi);
+  updateLegendLabels(lo, hi, degenerate);
   buildSummary(totals, federal);
 }
 
@@ -80,11 +86,18 @@ function buildLegendGradient() {
   els.legendBar.style.background = `linear-gradient(to right, ${stops})`;
 }
 
-function updateLegendLabels(lo, hi) {
+function updateLegendLabels(lo, hi, degenerate = false) {
   const isEff = els.metric.value === "effective";
+  els.legendLabel.textContent = isEff ? "Total tax ÷ income" : "Total annual tax";
+  if (degenerate) {
+    // Nothing to scale against; showing "0.0% - 100.0%" would advertise a range
+    // no county occupies.
+    els.legendLo.textContent = "n/a";
+    els.legendHi.textContent = isEff ? "no income to divide by" : "n/a";
+    return;
+  }
   els.legendLo.textContent = isEff ? (lo * 100).toFixed(1) + "%" : fmtUSD(lo);
   els.legendHi.textContent = isEff ? (hi * 100).toFixed(1) + "%" : fmtUSD(hi);
-  els.legendLabel.textContent = isEff ? "Total tax ÷ income" : "Total annual tax";
 }
 
 function buildSummary(totals, federal) {

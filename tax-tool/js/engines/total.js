@@ -3,16 +3,18 @@ import { stateIncomeTax } from "./stateIncome.js";
 import { localIncomeTax, salesTax, propertyTax } from "./localSalesProperty.js";
 
 // Compute the tax breakdown for one county.
-//   inputs: {gross, status, monthlySpend, housePrice, taxableFraction}
-//   county: {state, property_rate, sales_rate, local_rate, local_base}
+//   inputs:  {gross, status, monthlySpend, housePrice, taxableFraction}
+//   county:  {state, property_rate, sales_rate, local_rate, local_base, local_offset?}
 //   stateRecords: states map from state_income_tax.json
 //   federal: precomputed federal total (constant across counties)
-export function countyBreakdown(inputs, county, stateRecords, federal) {
+//   federalIncome: the income-tax part of that total, deductible in AL
+export function countyBreakdown(inputs, county, stateRecords, federal, federalIncome = 0) {
   const { gross, status, monthlySpend, housePrice, taxableFraction } = inputs;
   const property = propertyTax(housePrice, county.property_rate);
   if (property === null) return null; // no property data -> render as no-data
-  const stateInc = stateIncomeTax(gross, status, stateRecords[county.state]);
-  const local = localIncomeTax(gross, stateInc, county.local_rate, county.local_base);
+  const stateInc = stateIncomeTax(gross, status, stateRecords[county.state], federalIncome);
+  const offset = county.local_offset ? (county.local_offset[status] || 0) : 0;
+  const local = localIncomeTax(gross, stateInc, county.local_rate, county.local_base, offset);
   const sales = salesTax(monthlySpend, taxableFraction, county.sales_rate);
   const total = Math.round((federal + stateInc + local + sales + property) * 100) / 100;
   return {
