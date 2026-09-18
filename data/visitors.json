@@ -1,16 +1,18 @@
 {
-  "updated": "2026-09-18T15:00:11Z",
-  "total": 129,
+  "updated": "2026-09-18T18:28:41Z",
+  "total": 130,
   "countries": {
     "050": 1,
     "356": 1,
     "608": 1,
+    "620": 1,
     "840": 126
   },
   "names": {
     "050": "Bangladesh",
     "356": "India",
     "608": "Philippines",
+    "620": "Portugal",
     "840": "United States"
   },
   "unmatched": {}
