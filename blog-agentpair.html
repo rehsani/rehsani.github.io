@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Two Agents Are Better Than One &mdash; Reza Ehsani</title>
+  <meta name="description" content="I pair a coding agent with a second agent that reviews its work. To check I was not fooling myself, I benchmarked it on 20 tasks against a single agent working alone.">
+  <link rel="canonical" href="https://rehsani.github.io/blog-agentpair.html">
+
+  <!-- Open Graph for rich previews -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Two Agents Are Better Than One &mdash; Reza Ehsani">
+  <meta property="og:description" content="I pair a coding agent with a second agent that reviews its work. To check I was not fooling myself, I benchmarked it on 20 tasks against a single agent working alone.">
+  <meta property="og:url" content="https://rehsani.github.io/blog-agentpair.html">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Two Agents Are Better Than One &mdash; Reza Ehsani">
+  <meta name="twitter:description" content="I pair a coding agent with a second agent that reviews its work. To check I was not fooling myself, I benchmarked it on 20 tasks against a single agent working alone.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/nav.js" defer></script>
+  <!-- GoatCounter: cookieless, no IPs stored. Feeds data/visitors.json via the visitor-map workflow. -->
+  <script data-goatcounter="https://rehsani.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+  <style>
+    /* Post-specific extras only; the shared .blog-article core lives in css/style.css. */
+    .blog-article table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.9rem; }
+    .blog-article th, .blog-article td { padding: 0.55rem 0.6rem; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.12); }
+    .blog-article th { color: #fff; font-weight: 600; text-align: right; }
+    .blog-article th:first-child, .blog-article td:first-child { text-align: left; }
+    .blog-article tbody td { color: rgba(255,255,255,0.92); }
+    .blog-article .win { color: #8fd9a8; font-weight: 600; }
+    .blog-article .table-note { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: -0.5rem; }
+    .blog-article code { background: rgba(255,255,255,0.08); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.88em; }
+    .blog-article .table-wrap { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <nav>
+      <a href="index.html" class="name">Reza Ehsani</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li class="dropdown">
+          <button type="button" class="dropdown-toggle" aria-expanded="false" aria-haspopup="true">Tools</button>
+          <ul class="dropdown-menu">
+            <li><a href="tax-tool/index.html">US Tax Map</a></li>
+            <li><a href="https://github.com/rehsani/lake-area-gee" target="_blank">Lake Area from Space</a></li>
+            <li><a href="https://github.com/rehsani/alphacamels" target="_blank">AlphaCAMELS</a></li>
+          </ul>
+        </li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="https://scholar.google.com/citations?view_op=list_works&hl=en&user=kGu8lPYAAAAJ" target="_blank">Publications</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+    <div class="landing" style="min-height: 20vh;"></div>
+
+  <article class="blog-article">
+    <a href="blog.html" class="back">&larr; Back to blog</a>
+    <h1>Two Agents Are Better Than One</h1>
+    <p class="meta">I pair a coding agent with a second agent that reviews its work. To check I was not fooling myself, I benchmarked it on 20 tasks.</p>
+
+    <p>
+      Past the hype, AI models still have a long way to go. They are genuinely great at
+      synthesizing context and pulling a document together. They are not always as good as
+      advertised, and you notice this most once the euphoria of the first few weeks wears off.
+    </p>
+    <p>
+      I have been using AI for many years and LLMs constantly since 2021. The thing that has
+      annoyed me most is not the hard failures. It is how many simple mistakes they make that a
+      little more attention would have caught. An off-by-one in a boundary condition. A regex
+      that quietly accepts a trailing newline. A test that asserts the same wrong thing the code
+      does. When I break a task into smaller pieces, or point an agent at one specific concern,
+      it finds these things without difficulty. Left to run end to end on its own, it does not.
+    </p>
+
+    <h2>The idea</h2>
+    <p>
+      A few months ago I started using two agents for my development work instead of one. The
+      first implements the tool and writes the tests. A second, running separately, reviews what
+      the first one did and looks for exactly those small avoidable bugs, before I do my own
+      high-level review by hand.
+    </p>
+    <p>
+      Over time my impression was that this caught a lot of the annoying stuff and made working
+      with agents considerably more pleasant. But an impression is not evidence, and I wanted to
+      be sure I was not hallucinating the benefit myself. So I benchmarked it.
+    </p>
+
+    <h2>The benchmark</h2>
+    <p>
+      I took 20 Python tasks from <a href="https://github.com/bigcode-project/bigcodebench" target="_blank">BigCodeBench</a>
+      and ran each one two ways.
+    </p>
+    <ul>
+      <li><strong>agent-pair.</strong> An implementer writes <code>solution.py</code> and its
+        tests from the task description. A reviewer, in a separate session with no memory of the
+        first, raises findings with evidence. The implementer applies what it accepts and
+        rejects the rest with a reason. Anything it rejects goes to an orchestrator that decides
+        who was right, running code first when running something would settle the argument. If
+        the orchestrator rules against the implementer, the implementer is sent back once to
+        carry out that ruling. One pass, no looping.</li>
+      <li><strong>baseline.</strong> One agent writes the code and its tests and declares itself
+        done.</li>
+    </ul>
+    <p>
+      Both arms get only the task description. Every role in a run uses the same model unless I
+      say otherwise, so the difference between the arms is the review mechanism rather than one
+      side getting a better model. Afterwards, both solutions are scored against BigCodeBench's
+      own tests, which neither agent ever sees. 102 tests across the 20 tasks. Every task's
+      reference solution passes all of its own tests, so nothing below is the benchmark's fault.
+    </p>
+
+    <h2>Results</h2>
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>implementer</th><th>reviewer</th><th>agent-pair</th><th>baseline</th><th>gap</th>
+          <th>pair cost</th><th>baseline cost</th><th>pair time</th><th>baseline time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sonnet</td><td>Opus</td><td>78.4%</td><td>70.6%</td><td class="win">+7.8</td>
+          <td>$10.38</td><td>$2.39</td><td>44.8 min</td><td>10.7 min</td>
+        </tr>
+        <tr>
+          <td>Opus</td><td>Opus</td><td>91.2%</td><td>79.4%</td><td class="win">+11.8</td>
+          <td>$15.15</td><td>$4.62</td><td>51.4 min</td><td>16.3 min</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="table-note">
+      Percentages are held-out tests passed. Costs and times are totals for all 20 tasks run one
+      after another, not per task.
+    </p>
+
+    <div class="highlight-box">
+      <strong>Review is worth what it costs, when the reviewer is good enough.</strong> A second
+      Opus pass over Opus's own code adds almost 12 points. Over Sonnet's code it adds almost 8.
+      These are the small avoidable bugs I had been catching by hand, now caught before I look.
+    </div>
+
+    <p>
+      The reviewer was not short of material. Across 20 tasks it raised 42 findings reviewing
+      Opus's code and 62 reviewing Sonnet's, and the implementer accepted almost all of them.
+      Genuine disagreement was rare: across these 40 runs the implementer pushed back 5 times,
+      and the orchestrator ruled against it once.
+    </p>
+
+    <h2>But the cost</h2>
+    <p>
+      At first glance the overhead looks bad, and it is real: roughly three to four times the
+      money and three times the wall clock. That is the honest headline number and I am not going
+      to dress it up.
+    </p>
+    <p>
+      But the comparison is one baseline attempt against one reviewed attempt, and nobody ships
+      the first draft of a failing task. To get the baseline to where the pair arm already is,
+      you run it again on what it got wrong, and again, and each of those attempts costs roughly
+      what the first one did. Add the time you spend reading the output yourself to find the
+      boundary condition it missed. Once you count those, I think the gap closes a long way, and
+      for my own work it is clearly worth it.
+    </p>
+    <p>
+      One result that cuts against me, which I will state plainly: Sonnet with an Opus reviewer
+      reaches 78.4% for $10.38, while Opus writing alone reaches 79.4% for $4.62. On this
+      benchmark, buying an expensive reviewer for cheap code costs more than simply using the
+      expensive model to write it in the first place. The configuration that actually wins is
+      Opus reviewing Opus.
+    </p>
+
+    <h2>The tool</h2>
+    <p>
+      The harness, the benchmark tasks and the scoring are all on GitHub at
+      <a href="https://github.com/rehsani/agentpair" target="_blank">github.com/rehsani/agentpair</a>.
+      Every run records what each role said, what it accepted or rejected and why, how disputes
+      were settled, and the tokens, cost and time behind all of it.
+    </p>
+    <p>
+      Take a look, and let me know if you have suggestions for making it better or cheaper. The
+      obvious target is that the implementer currently starts a fresh session for each of its
+      turns and re-reads files it wrote minutes earlier, which is a large part of the premium and
+      is not fundamental to the idea.
+    </p>
+
+    <p><a href="blog.html">&larr; Back to blog</a></p>
+  </article>
+</body>
+</html>
