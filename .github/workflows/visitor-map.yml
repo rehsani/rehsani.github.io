@@ -49,8 +49,11 @@ jobs:
             echo "No change in visitor data; nothing to commit."
             exit 0
           fi
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Authored as Reza so the refresh counts as a contribution. GitHub credits the
+          # account whose verified email matches the commit author, and the bot address
+          # belongs to the bot.
+          git config user.name  "rehsani"
+          git config user.email "rezaa.ehsaani@gmail.com"
           git add data/visitors.json
           git commit -m "Update visitor map data"
           git push
