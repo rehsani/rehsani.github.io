@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-23 08:48:01
+
+- Changed the visitor map schedule in `.github/workflows/visitor-map.yml` from hourly to every 6 hours (`17 */6 * * *`).
+
 ## 2026-08-19 18:05:00
 
 - Diagnosed the frozen visitor counter: `scripts/visitor_stats.py` sent no `start` to
