@@ -18,6 +18,11 @@ const COLOR_INTERPOLATOR = (t) => _jet(Math.max(0, Math.min(1, t)));
 // always match. Change this one value to adjust the binning.
 const COLOR_BINS = 25;
 
+// Off-ramp fills: white for a $0 tax, mid gray for missing data. Neither
+// appears in the jet ramp, so both read unambiguously on the map and legend.
+const ZERO_COLOR = "#ffffff";
+const NO_DATA_COLOR = "#8a8a8a";
+
 export class TaxMap {
   constructor(svgSelector, tooltipSelector) {
     this.svg = d3.select(svgSelector);
@@ -56,24 +61,28 @@ export class TaxMap {
       })
       .on("mouseleave", () => this.tooltip.style("opacity", 0));
 
-    // State outlines for readability.
+    // State outlines for readability, coastlines included so white ($0) states
+    // keep a visible edge against a light background.
     this.svg.append("path")
-      .datum(topojson.mesh(topo, topo.objects.states, (a, b) => a !== b))
+      .datum(topojson.mesh(topo, topo.objects.states))
       .attr("class", "state-border")
       .attr("d", this.path);
   }
 
   // Recolor from a {geoid: breakdown} map, scaling by `metric` (a getter) over
   // the precomputed [lo, hi] domain (computed once in the caller, shared with
-  // the legend/summary so they always agree).
+  // the legend/summary so they always agree). Counties whose value is $0 (e.g.
+  // no state income or sales tax) get ZERO_COLOR, outside the ramp.
   update(results, metric, lo, hi) {
     this.results = results;
     this.color.domain([lo, hi]);
     this.countyPaths.attr("fill", (d) => {
       const b = results[d.id];
-      return b ? this.color(metric(b)) : "#e0e0e0";
+      if (!b) return NO_DATA_COLOR;
+      const v = metric(b);
+      return v > 0 ? this.color(v) : ZERO_COLOR;
     });
   }
 }
 
-export { fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS };
+export { fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS, ZERO_COLOR, NO_DATA_COLOR };
