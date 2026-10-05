@@ -70,6 +70,7 @@ function recompute() {
   const summaryValues = [];
   let lo = Infinity;
   let hi = -Infinity;
+  let zeroCount = 0;
   for (const [geoid, county] of state.countyList) {
     const b = countyBreakdown(inp, county, state.stateRecords, federal, federalIncome);
     if (!b) continue; // no property data -> left as no-data on the map
@@ -80,18 +81,18 @@ function recompute() {
     if (onRamp(m)) {
       if (m < lo) lo = m;
       if (m > hi) hi = m;
+    } else {
+      zeroCount++;
     }
   }
   // No county has a positive metric value (e.g. "÷ income" or income tax at zero
   // income): there is no range to show, so flag it rather than inventing one.
   const degenerate = !isFinite(lo);
   if (degenerate) { lo = 0; hi = 1; }
-  // One distinct value would collapse the quantize domain and paint every county
-  // the top bin; pad the map's domain (the legend still shows the true value).
-  const domainHi = hi > lo ? hi : lo + 1;
 
-  state.map.update(results, valueById, lo, domainHi, !spec.pct);
-  updateLegendLabels(spec, lo, hi, degenerate);
+  const zeroOffRamp = !spec.pct;
+  state.map.update(results, valueById, lo, hi, zeroOffRamp);
+  updateLegendLabels(spec, lo, hi, degenerate, zeroOffRamp && zeroCount > 0);
   buildSummary(spec, summaryValues, federal);
 }
 
@@ -107,10 +108,11 @@ function buildLegendGradient() {
   els.legendBar.style.background = `linear-gradient(to right, ${stops})`;
 }
 
-function updateLegendLabels(spec, lo, hi, degenerate = false) {
+// `showZeroKey`: some county is drawn white, which happens only on dollar layers
+// (the ratio layer keeps 0 on the ramp).
+function updateLegendLabels(spec, lo, hi, degenerate, showZeroKey) {
   els.legendLabel.textContent = spec.label;
-  // White means "$0 tax" only on dollar layers; the ratio layer keeps 0 on the ramp.
-  els.keyZero.hidden = !!spec.pct;
+  els.keyZero.hidden = !showZeroKey;
   if (degenerate) {
     // Nothing to scale against; showing "0.0% - 100.0%" would advertise a range
     // no county occupies.

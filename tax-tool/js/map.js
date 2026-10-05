@@ -79,14 +79,16 @@ export class TaxMap {
   // otherwise they clamp to the ramp's bottom bin.
   update(results, values, lo, hi, zeroOffRamp) {
     this.results = results;
-    this.color.domain([lo, hi]);
-    const isZero = (d) => d.id in values && zeroOffRamp && !onRamp(values[d.id]);
-    this.countyPaths
-      .classed("zero", isZero)
-      .attr("fill", (d) => {
-        if (!(d.id in values)) return NO_DATA_COLOR;
-        return isZero(d) ? ZERO_COLOR : this.color(values[d.id]);
-      });
+    // One distinct value would collapse the quantize domain and paint every
+    // county the top bin; pad it so a tie maps to a single bin.
+    this.color.domain([lo, hi > lo ? hi : lo + 1]);
+    const color = this.color;
+    this.countyPaths.each(function (d) {
+      const v = values[d.id];
+      const zero = v !== undefined && zeroOffRamp && !onRamp(v);
+      this.classList.toggle("zero", zero);
+      this.setAttribute("fill", v === undefined ? NO_DATA_COLOR : zero ? ZERO_COLOR : color(v));
+    });
   }
 }
 
