@@ -1,5 +1,5 @@
 // App entry: load data, wire controls, recompute all counties on input, recolor.
-import { TaxMap, fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS } from "./map.js";
+import { TaxMap, fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS, ZERO_COLOR, NO_DATA_COLOR, onRamp } from "./map.js";
 import { countyBreakdown } from "./engines/total.js";
 import { federalTotal, federalIncomeTax } from "./engines/federal.js";
 
@@ -21,6 +21,9 @@ const els = {
   legendLo: document.getElementById("legend-lo"),
   legendHi: document.getElementById("legend-hi"),
   legendLabel: document.getElementById("legend-label"),
+  keyZero: document.getElementById("key-zero"),
+  swatchZero: document.getElementById("swatch-zero"),
+  swatchNoData: document.getElementById("swatch-nodata"),
   summary: document.getElementById("summary"),
 };
 
@@ -34,8 +37,19 @@ function inputs() {
   };
 }
 
-const metricGetter = () =>
-  els.metric.value === "effective" ? (b) => b.effective : (b) => b.total;
+// "Color by" layers, keyed by the #metric option values. `get` reads the value
+// from a county breakdown; `pct` marks a ratio (legend shows %, summary falls
+// back to totals, and 0 stays on the ramp because a 0% ratio at $0 income does
+// not mean no tax is owed); `noun` names the layer in the summary line.
+const METRICS = {
+  total: { label: "Total annual tax", noun: "total", get: (b) => b.total },
+  effective: { label: "Total tax ÷ income", noun: "total", get: (b) => b.effective, pct: true },
+  income: { label: "State + local income tax", noun: "state + local income tax",
+            get: (b) => b.stateIncome + b.localIncome },
+  property: { label: "Property tax", noun: "property tax", get: (b) => b.property },
+  sales: { label: "Sales tax", noun: "sales tax", get: (b) => b.sales },
+};
+const currentMetric = () => METRICS[els.metric.value] ?? METRICS.total;
 
 function recompute() {
   const inp = inputs();
@@ -47,37 +61,45 @@ function recompute() {
   const federal = federalTotal(inp.gross, inp.status, els.incomeType.value);
   // Alabama deducts federal income tax, so the state engine needs that part alone.
   const federalIncome = federalIncomeTax(inp.gross, inp.status);
-  const metric = metricGetter();
-  // Single pass: build results, the color-domain extent (linear min/max, no
-  // sort), and the totals list for the summary.
+  const spec = currentMetric();
+  // Single pass: build results, each county's layer value, the color-domain
+  // extent (linear min/max, no sort; only on-ramp values count), and the summary
+  // values (the layer's dollars, or totals for the ratio view).
   const results = {};
-  const totals = [];
+  const valueById = {};
+  const summaryValues = [];
   let lo = Infinity;
   let hi = -Infinity;
+  let zeroCount = 0;
   for (const [geoid, county] of state.countyList) {
     const b = countyBreakdown(inp, county, state.stateRecords, federal, federalIncome);
     if (!b) continue; // no property data -> left as no-data on the map
     results[geoid] = b;
-    totals.push(b.total);
-    const m = metric(b);
-    if (m > 0) {
+    const m = spec.get(b);
+    valueById[geoid] = m;
+    summaryValues.push(spec.pct ? b.total : m);
+    if (onRamp(m)) {
       if (m < lo) lo = m;
       if (m > hi) hi = m;
+    } else {
+      zeroCount++;
     }
   }
-  // No county has a positive metric value. That happens in "÷ income" mode at
-  // zero income, where every effective rate is 0: there is no range to show, so
-  // flag it rather than inventing a 0-100% one.
+  // No county has a positive metric value (e.g. "÷ income" or income tax at zero
+  // income): there is no range to show, so flag it rather than inventing one.
   const degenerate = !isFinite(lo);
   if (degenerate) { lo = 0; hi = 1; }
 
-  state.map.update(results, metric, lo, hi);
-  updateLegendLabels(lo, hi, degenerate);
-  buildSummary(totals, federal);
+  const zeroOffRamp = !spec.pct;
+  state.map.update(results, valueById, lo, hi, zeroOffRamp);
+  updateLegendLabels(spec, lo, hi, degenerate, zeroOffRamp && zeroCount > 0);
+  buildSummary(spec, summaryValues, federal);
 }
 
-// The stepped color gradient is constant — build it once at boot.
+// The stepped color gradient and off-ramp swatches are constant — build once at boot.
 function buildLegendGradient() {
+  els.swatchZero.style.background = ZERO_COLOR;
+  els.swatchNoData.style.background = NO_DATA_COLOR;
   const colors = d3.quantize(COLOR_INTERPOLATOR, COLOR_BINS);
   const w = 100 / COLOR_BINS;
   const stops = colors
@@ -86,27 +108,29 @@ function buildLegendGradient() {
   els.legendBar.style.background = `linear-gradient(to right, ${stops})`;
 }
 
-function updateLegendLabels(lo, hi, degenerate = false) {
-  const isEff = els.metric.value === "effective";
-  els.legendLabel.textContent = isEff ? "Total tax ÷ income" : "Total annual tax";
+// `showZeroKey`: some county is drawn white, which happens only on dollar layers
+// (the ratio layer keeps 0 on the ramp).
+function updateLegendLabels(spec, lo, hi, degenerate, showZeroKey) {
+  els.legendLabel.textContent = spec.label;
+  els.keyZero.hidden = !showZeroKey;
   if (degenerate) {
     // Nothing to scale against; showing "0.0% - 100.0%" would advertise a range
     // no county occupies.
     els.legendLo.textContent = "n/a";
-    els.legendHi.textContent = isEff ? "no income to divide by" : "n/a";
+    els.legendHi.textContent = spec.pct ? "no income to divide by" : "n/a";
     return;
   }
-  els.legendLo.textContent = isEff ? (lo * 100).toFixed(1) + "%" : fmtUSD(lo);
-  els.legendHi.textContent = isEff ? (hi * 100).toFixed(1) + "%" : fmtUSD(hi);
+  els.legendLo.textContent = spec.pct ? (lo * 100).toFixed(1) + "%" : fmtUSD(lo);
+  els.legendHi.textContent = spec.pct ? (hi * 100).toFixed(1) + "%" : fmtUSD(hi);
 }
 
-function buildSummary(totals, federal) {
-  totals.sort(d3.ascending);
-  const median = d3.quantileSorted(totals, 0.5);
+function buildSummary(spec, values, federal) {
+  values.sort(d3.ascending);
+  const median = d3.quantileSorted(values, 0.5);
   els.summary.innerHTML =
     `Federal (same everywhere): <b>${fmtUSD(federal)}</b> &nbsp;·&nbsp; ` +
-    `Median county total: <b>${fmtUSD(median)}</b> &nbsp;·&nbsp; ` +
-    `Range: ${fmtUSD(totals[0])} – ${fmtUSD(totals[totals.length - 1])}`;
+    `Median county ${spec.noun}: <b>${fmtUSD(median)}</b> &nbsp;·&nbsp; ` +
+    `Range: ${fmtUSD(values[0])} – ${fmtUSD(values[values.length - 1])}`;
 }
 
 function tooltipHTML(geoid, b) {
