@@ -1,3 +1,6 @@
 .DS_Store
 __pycache__/
 *.pyc
+PROGRESS.md
+CONTEXT.md
+PLAN.md
