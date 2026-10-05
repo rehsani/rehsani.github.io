@@ -1,5 +1,5 @@
 // App entry: load data, wire controls, recompute all counties on input, recolor.
-import { TaxMap, fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS, ZERO_COLOR, NO_DATA_COLOR } from "./map.js";
+import { TaxMap, fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS, ZERO_COLOR, NO_DATA_COLOR, onRamp } from "./map.js";
 import { countyBreakdown } from "./engines/total.js";
 import { federalTotal, federalIncomeTax } from "./engines/federal.js";
 
@@ -21,6 +21,7 @@ const els = {
   legendLo: document.getElementById("legend-lo"),
   legendHi: document.getElementById("legend-hi"),
   legendLabel: document.getElementById("legend-label"),
+  keyZero: document.getElementById("key-zero"),
   swatchZero: document.getElementById("swatch-zero"),
   swatchNoData: document.getElementById("swatch-nodata"),
   summary: document.getElementById("summary"),
@@ -38,7 +39,8 @@ function inputs() {
 
 // "Color by" layers, keyed by the #metric option values. `get` reads the value
 // from a county breakdown; `pct` marks a ratio (legend shows %, summary falls
-// back to totals); `noun` names the layer in the summary line.
+// back to totals, and 0 stays on the ramp because a 0% ratio at $0 income does
+// not mean no tax is owed); `noun` names the layer in the summary line.
 const METRICS = {
   total: { label: "Total annual tax", noun: "total", get: (b) => b.total },
   effective: { label: "Total tax ÷ income", noun: "total", get: (b) => b.effective, pct: true },
@@ -47,7 +49,7 @@ const METRICS = {
   property: { label: "Property tax", noun: "property tax", get: (b) => b.property },
   sales: { label: "Sales tax", noun: "sales tax", get: (b) => b.sales },
 };
-const currentMetric = () => METRICS[els.metric.value];
+const currentMetric = () => METRICS[els.metric.value] ?? METRICS.total;
 
 function recompute() {
   const inp = inputs();
@@ -60,21 +62,22 @@ function recompute() {
   // Alabama deducts federal income tax, so the state engine needs that part alone.
   const federalIncome = federalIncomeTax(inp.gross, inp.status);
   const spec = currentMetric();
-  const metric = spec.get;
-  // Single pass: build results, the color-domain extent (linear min/max, no
-  // sort; $0 counties are excluded and drawn off-ramp), and the summary values
-  // (the layer's dollars, or totals for the ratio view).
+  // Single pass: build results, each county's layer value, the color-domain
+  // extent (linear min/max, no sort; only on-ramp values count), and the summary
+  // values (the layer's dollars, or totals for the ratio view).
   const results = {};
-  const values = [];
+  const valueById = {};
+  const summaryValues = [];
   let lo = Infinity;
   let hi = -Infinity;
   for (const [geoid, county] of state.countyList) {
     const b = countyBreakdown(inp, county, state.stateRecords, federal, federalIncome);
     if (!b) continue; // no property data -> left as no-data on the map
     results[geoid] = b;
-    const m = metric(b);
-    values.push(spec.pct ? b.total : m);
-    if (m > 0) {
+    const m = spec.get(b);
+    valueById[geoid] = m;
+    summaryValues.push(spec.pct ? b.total : m);
+    if (onRamp(m)) {
       if (m < lo) lo = m;
       if (m > hi) hi = m;
     }
@@ -83,10 +86,13 @@ function recompute() {
   // income): there is no range to show, so flag it rather than inventing one.
   const degenerate = !isFinite(lo);
   if (degenerate) { lo = 0; hi = 1; }
+  // One distinct value would collapse the quantize domain and paint every county
+  // the top bin; pad the map's domain (the legend still shows the true value).
+  const domainHi = hi > lo ? hi : lo + 1;
 
-  state.map.update(results, metric, lo, hi);
+  state.map.update(results, valueById, lo, domainHi, !spec.pct);
   updateLegendLabels(spec, lo, hi, degenerate);
-  buildSummary(spec, values, federal);
+  buildSummary(spec, summaryValues, federal);
 }
 
 // The stepped color gradient and off-ramp swatches are constant — build once at boot.
@@ -103,6 +109,8 @@ function buildLegendGradient() {
 
 function updateLegendLabels(spec, lo, hi, degenerate = false) {
   els.legendLabel.textContent = spec.label;
+  // White means "$0 tax" only on dollar layers; the ratio layer keeps 0 on the ramp.
+  els.keyZero.hidden = !!spec.pct;
   if (degenerate) {
     // Nothing to scale against; showing "0.0% - 100.0%" would advertise a range
     // no county occupies.

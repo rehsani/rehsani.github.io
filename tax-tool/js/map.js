@@ -23,6 +23,10 @@ const COLOR_BINS = 25;
 const ZERO_COLOR = "#ffffff";
 const NO_DATA_COLOR = "#8a8a8a";
 
+// Single source of the on-ramp rule: only positive values are colored on the
+// ramp and count toward its [lo, hi] extent.
+const onRamp = (v) => v > 0;
+
 export class TaxMap {
   constructor(svgSelector, tooltipSelector) {
     this.svg = d3.select(svgSelector);
@@ -50,7 +54,7 @@ export class TaxMap {
       .join("path")
       .attr("d", this.path)
       .attr("class", "county")
-      .attr("fill", "#eee")
+      .attr("fill", NO_DATA_COLOR)
       .on("mousemove", (event, d) => {
         const b = this.results[d.id];
         if (!b) { this.tooltip.style("opacity", 0); return; }
@@ -61,28 +65,29 @@ export class TaxMap {
       })
       .on("mouseleave", () => this.tooltip.style("opacity", 0));
 
-    // State outlines for readability, coastlines included so white ($0) states
-    // keep a visible edge against a light background.
+    // State outlines for readability.
     this.svg.append("path")
-      .datum(topojson.mesh(topo, topo.objects.states))
+      .datum(topojson.mesh(topo, topo.objects.states, (a, b) => a !== b))
       .attr("class", "state-border")
       .attr("d", this.path);
   }
 
-  // Recolor from a {geoid: breakdown} map, scaling by `metric` (a getter) over
-  // the precomputed [lo, hi] domain (computed once in the caller, shared with
-  // the legend/summary so they always agree). Counties whose value is $0 (e.g.
-  // no state income or sales tax) get ZERO_COLOR, outside the ramp.
-  update(results, metric, lo, hi) {
+  // Recolor from {geoid: breakdown} and the matching precomputed {geoid: value},
+  // over the [lo, hi] domain (computed once in the caller and shared with the
+  // legend). With `zeroOffRamp`, off-ramp values (a $0 tax) get ZERO_COLOR and
+  // the `zero` class (darker stroke, so white areas keep their borders);
+  // otherwise they clamp to the ramp's bottom bin.
+  update(results, values, lo, hi, zeroOffRamp) {
     this.results = results;
     this.color.domain([lo, hi]);
-    this.countyPaths.attr("fill", (d) => {
-      const b = results[d.id];
-      if (!b) return NO_DATA_COLOR;
-      const v = metric(b);
-      return v > 0 ? this.color(v) : ZERO_COLOR;
-    });
+    const isZero = (d) => d.id in values && zeroOffRamp && !onRamp(values[d.id]);
+    this.countyPaths
+      .classed("zero", isZero)
+      .attr("fill", (d) => {
+        if (!(d.id in values)) return NO_DATA_COLOR;
+        return isZero(d) ? ZERO_COLOR : this.color(values[d.id]);
+      });
   }
 }
 
-export { fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS, ZERO_COLOR, NO_DATA_COLOR };
+export { fmtUSD, COLOR_INTERPOLATOR, COLOR_BINS, ZERO_COLOR, NO_DATA_COLOR, onRamp };

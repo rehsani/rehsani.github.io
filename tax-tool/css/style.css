@@ -57,7 +57,9 @@ main { display: flex; gap: 1.25rem; padding: 1.25rem 1.75rem 2rem; align-items: 
 }
 #map { width: 100%; max-width: 100%; height: auto; display: block; }
 .county { stroke: rgba(255, 255, 255, 0.35); stroke-width: 0.2; }
-.state-border { fill: none; stroke: rgba(255, 255, 255, 0.55); stroke-width: 0.6; pointer-events: none; }
+.county.zero { stroke: #b5b5b5; } /* white $0 fill would hide a white stroke */
+/* Mid gray, not white, so state lines stay visible across white $0 states too. */
+.state-border { fill: none; stroke: rgba(160, 160, 160, 0.85); stroke-width: 0.6; pointer-events: none; }
 #summary { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 0.3rem 0 0.5rem; }
 
 /* --- Legend --- */
